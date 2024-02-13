@@ -16,12 +16,12 @@ import threading
 import time
 
 class User: 
-    def __init__(self, id, username, password):
+    def _init_(self, id, username, password):
         self.id = id
         self.username = username
         self.password = password
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<User: {self.username}>'
 
 users = []
@@ -30,12 +30,12 @@ users.append(User(id=2, username='Becca', password='secret'))
 users.append(User(id=3, username='Carlos', password='somethingsimple'))
 
 
-app = Flask(__name__)
+app = Flask(_name_)
 app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 
 # Replace with your actual API key and access token
 api_key = "nou76gvyfsugbu6q"
-access_token = "hpU5sg6c9cSjC45MfL0oRgK9dnHHtdNO"
+access_token = "vUNA5Rax5fZf8patweFpahXnJKGzUo3x"
 BASE_URL = 'https://kite.zerodha.com/'
 
 
@@ -137,8 +137,8 @@ def p_n_l():
 
     if response.status_code == 200:
         data = response.json()
-        p_n_l = data["net"]["pnl"]
-        return p_n_l
+        profit_loss = data["net"]["pnl"]
+        return profit_loss
     else:
         return None
 
@@ -168,21 +168,23 @@ def get_last_traded_price_and_profit_loss():
     stock_symbol = request.args.get('symbol')
     last_traded_price = get_last_traded_price(stock_symbol)
     profit_loss = p_n_l
-    quantity = quantity
+    #quantity = quantity
 
     # Fetch the average price from the position details
     position = next((p for p in position_details if p['symbol'] == stock_symbol), None)
     if position:
         average_price = position['average_price']
-        #quantity = position['quantity']
+        quantity = position['quantity']
 
         # Calculate profit/loss and change percentage
         if position['type'] == 'Buy':
-            profit_loss = (last_traded_price - average_price) * quantity
+            profit_loss = profit_loss
+            #profit_loss = (last_traded_price - average_price) * quantity
         elif position['type'] == 'Sell':
-            profit_loss = (average_price - last_traded_price) * quantity
+            profit_loss = profit_loss
+            #profit_loss = (average_price - last_traded_price) * quantity
         else:
-            profit_loss = (average_price - last_traded_price) * quantity
+            profit_loss = profit_loss
 
         # Calculate change percentage
         if average_price != 0:
@@ -210,6 +212,7 @@ def place_buy_order():
 
     stock_symbol = request.form['stockSymbolBuy']
     quantity = int(request.form['quantity'])
+    #quantity = quantity
 
     # Define order details for a market buy order
     order_details = {
@@ -233,8 +236,8 @@ def place_buy_order():
 
             if last_traded_price is not None:
                 if order_details['transaction_type'] == 'BUY':
-                    profit_loss = (last_traded_price - average_price) * quantity
-
+                    #profit_loss = (last_traded_price - average_price) * quantity
+                    profit_loss = profit_loss
                     if average_price != 0:
                         change_percentage = ((last_traded_price - average_price) / average_price) * 100
                     else:
@@ -319,7 +322,8 @@ def place_sell_order():
 
             if last_traded_price is not None:
                 if order_details['transaction_type'] == 'SELL':
-                    profit_loss = (average_price - last_traded_price) * quantity
+                    #profit_loss = (average_price - last_traded_price) * quantity
+                    profit_loss = profit_loss
 
                     if average_price != 0:
                         change_percentage = ((average_price - last_traded_price) / average_price) * 100
@@ -391,7 +395,7 @@ def logout():
 def run_app(port):
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     start_port = 8000
     end_port = 8005
 
