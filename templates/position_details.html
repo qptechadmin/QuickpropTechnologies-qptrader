@@ -18,7 +18,7 @@
     function updatePositionDetails() {
         {% for position in positions %}
         $.ajax({
-            url: /get_last_traded_price_and_profit_loss?symbol={{ position.symbol }},
+            url: '/get_last_traded_price_and_profit_loss?symbol={{ position.symbol }}',
             method: 'GET',
             success: function (data) {
                 // Determine if it's a buy or sell position based on quantity
