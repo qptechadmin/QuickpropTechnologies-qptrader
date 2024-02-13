@@ -18,7 +18,7 @@
     function updatePositionDetails() {
         {% for position in positions %}
         $.ajax({
-            url: `/get_last_traded_price_and_profit_loss?symbol={{ position.symbol }}`,
+            url: /get_last_traded_price_and_profit_loss?symbol={{ position.symbol }},
             method: 'GET',
             success: function (data) {
                 // Determine if it's a buy or sell position based on quantity
@@ -32,14 +32,15 @@
 
                 var averagePrice = {{ position.average_price }};
                 var lastTradedPrice = data.last_traded_price;
+                var profitLoss = data.profit_loss;
 
-                var profitLoss;
-                if (isBuy) {
-                    profitLoss = (lastTradedPrice - averagePrice) * quantity;
-                } else {
+                //var profitLoss;
+                //if (isBuy) {
+                  //  profitLoss = (lastTradedPrice - averagePrice) * quantity;
+                //} else {
                     // If it's a sell position, use the difference between averagePrice and averagePriceOfBuy
-                    profitLoss = (averagePrice - averagePriceOfBuy) * quantity;
-                }
+                  //  profitLoss = (averagePrice - averagePriceOfBuy) * quantity;
+                //}
 
                 // Update the profit/loss element with the calculated P&L
                 $('#profit-loss-{{ position.symbol }}').text(profitLoss.toFixed(2));
@@ -86,8 +87,8 @@
             <td>{{ position.symbol }}</td>
             <td>{{ position.quantity }}</td>
             <td>{{ position.average_price }}</td>
-            <td><span id="last-traded-price-{{ position.symbol }}">Loading...</span></td>
-            <td id="profit-loss-{{ position.symbol }}">Loading...</td>
+            <td>{{ position.lastTradedPrice }}</td>
+            <td>{{ position.profitLoss }}</td>
             <td id="change-{{ position.symbol }}">{{ position.change_percentage }}</td>
         </tr>
         {% endfor %}
