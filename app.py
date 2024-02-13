@@ -16,12 +16,12 @@ import threading
 import time
 
 class User: 
-    def _init_(self, id, username, password):
+    def __init__(self, id, username, password):
         self.id = id
         self.username = username
         self.password = password
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<User: {self.username}>'
 
 users = []
@@ -30,7 +30,7 @@ users.append(User(id=2, username='Becca', password='secret'))
 users.append(User(id=3, username='Carlos', password='somethingsimple'))
 
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 
 # Replace with your actual API key and access token
@@ -395,7 +395,7 @@ def logout():
 def run_app(port):
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
 
-if _name_ == "_main_":
+if _name_ == "__main__":
     start_port = 8000
     end_port = 8005
 
