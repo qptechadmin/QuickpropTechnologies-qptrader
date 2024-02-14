@@ -4,6 +4,7 @@ pipeline{
     stages{
          stage ('BUILD') {
              steps{
+               sh 'docker system prune --all --force'
                sh 'docker build -t qptrader:1.1 .'   
                sh 'sleep 5'
              }
