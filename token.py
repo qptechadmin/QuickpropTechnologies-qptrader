@@ -1,0 +1,1 @@
+from kiteconnect import KiteConnect  api_key="59wjq1il52jdm0t4" api_secret="4nnyecpuzmxev4q1xq7s61oxloqowai8" kite = KiteConnect(api_key=api_key)  #print(kite.login_url()) req_tkn = "KDmJgm1fFGSdlxVmWXS2HsUobCK0tjWB" gen_ssn= kite.generate_session(request_token=req_tkn, api_secret=api_secret) acc_tkn = gen_ssn['access_token'] print(acc_tkn)
