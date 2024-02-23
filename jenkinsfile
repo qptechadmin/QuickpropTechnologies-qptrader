@@ -12,7 +12,6 @@ pipeline{
     
         stage ('DEPLOY') {
             steps{
-	      sh 'docker system prune --all --force'
               sh 'docker run -d -p 8000:8000 qptrader:1.1'
               sh 'sleep 1'
             }
