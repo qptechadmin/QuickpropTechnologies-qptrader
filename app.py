@@ -81,7 +81,7 @@ def feedback():
     return render_template('feedback.html')
 
 @app.route('/trade')
-@login_required
+
 def profile():
     if not g.user:
         return redirect(url_for('login'))
