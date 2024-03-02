@@ -339,7 +339,7 @@ def executed_orders_page():
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
     # Execute the query to fetch data from the trades table
-    mycursor.execute("SELECT * FROM trades")
+    mycursor.execute("SELECT * FROM trades WHERE user = %s", (session['username'],))
     # Fetch all rows of the result
     data = mycursor.fetchall()
     # Close the cursor
