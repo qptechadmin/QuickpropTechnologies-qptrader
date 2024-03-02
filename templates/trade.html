@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quickprop Trader - Buy/Sell</title>
     <style>
         body {
@@ -20,8 +21,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: Green;
-            color: #fff;
+            background-color: Orange;
+            color: #f5f5f5;;
             margin: 10px;
             transition: background-color 0.3s ease;
         }
@@ -113,18 +114,19 @@
     </div>
     </center>
    <div class="field">
-                 <p class="control">
+           <div class="field">
+                 <p class="control" center>
                    <button >
+			   <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('executedOrders')">Orders</a>
+                   </button>
+		   <button >
+                           <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('executedOrders')">Positions</a>
+                   </button>
+		   <button >
                      <a href="{{url_for('logout')}}">Logout</a>
                    </button>
                  </p>
                </div>
-           <div class="field">
-                 <p class="control">
-                   <button >
-                     <a href="{{url_for('dashboard_page')}}">orders</a>
-                   </button>
-                 </p>
                </div>
 </body>
 </html>

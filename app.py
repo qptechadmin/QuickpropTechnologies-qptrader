@@ -14,7 +14,8 @@ import requests
 from kiteconnect import KiteConnect
 import threading
 import time
-
+import mysql.connector
+import os
 class User: 
     def __init__(self, id, username, password):
         self.id = id
@@ -37,6 +38,13 @@ app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 api_key = "nou76gvyfsugbu6q"
 access_token = "vUNA5Rax5fZf8patweFpahXnJKGzUo3x"
 BASE_URL = 'https://kite.zerodha.com/'
+# Establish connection to the database
+mydb = mysql.connector.connect(
+  host="localhost",
+  user= os.getenv("QP_USER_NAME"),
+  password= os.getenv("QP_PASSWORD"),
+  database="mydatabase"
+)
 
 
 @app.before_request 
@@ -226,7 +234,26 @@ def place_buy_order():
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
         profit_loss = p_n_l
-        quantity = quantity
+        average_price = trade_details[0]['average_price']
+        average_cost = average_price * quantity
+        # Create a cursor object to execute queries
+        mycursor = mydb.cursor()
+        data = [
+        ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost),
+        ]
+
+        # Define the SQL query to insert data into the trades table
+        sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
+    
+        # Execute the query for each set of data
+        mycursor.executemany(sql, data)
+
+        # Commit the changes to the database
+        mydb.commit()
+
+
+        # Close the cursor and connection
+        mycursor.close()
 
         if trade_details:
             average_price = trade_details[0]['average_price']
@@ -312,7 +339,28 @@ def place_sell_order():
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
         profit_loss = p_n_l
-        quantity = quantity
+        average_price = trade_details[0]['average_price']
+        average_cost = average_price * quantity
+        # Create a cursor object to execute queries
+        mycursor = mydb.cursor()
+        data = [
+        ( 'qptrader', stock_symbol, quantity, average_price, 'sell', average_cost),
+        ]
+
+        # Define the SQL query to insert data into the trades table
+        sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
+
+        # Execute the query for each set of data
+        mycursor.executemany(sql, data)
+    
+        # Commit the changes to the database
+        mydb.commit()
+
+        # Print the number of rows inserted
+        print(mycursor.rowcount, "rows inserted.")
+
+        # Close the cursor and connection
+        mycursor.close()
 
         if trade_details:
             average_price = trade_details[0]['average_price']
@@ -381,7 +429,18 @@ def dashboard_page():
 
 @app.route('/executed_orders')
 def executed_orders_page():
-    return render_template('executed_orders.html', orders=executed_orders)
+    # Create a cursor object to execute queries
+    mycursor = mydb.cursor(dictionary=True)
+
+    # Execute the query to fetch data from the trades table
+    mycursor.execute("SELECT * FROM trades")
+
+    # Fetch all rows of the result
+    data = mycursor.fetchall()
+
+    # Close the cursor
+    mycursor.close()
+    return render_template('executed_orders.html', orders=data)
 
 @app.route('/logout')
 def logout():
@@ -392,9 +451,4 @@ def run_app(port):
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
 
 if __name__ == "__main__":
-    start_port = 8000
-    end_port = 8005
-
-    for port in range(start_port, end_port + 1):
-        thread = threading.Thread(target=run_app, args=(port,))
-        thread.start()
+    run_app(9000)

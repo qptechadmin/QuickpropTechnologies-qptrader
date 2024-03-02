@@ -1,41 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Combined Page</title>
-    <style>
-        /* Add your CSS styles here */
-        .hidden {
-            display: none;
-        }
-    </style>
-    <script>
-        function showSection(sectionId) {
-            const sections = ['executedOrders', 'positionDetails'];
-            sections.forEach(section => {
-                const content = document.getElementById(section + 'Content');
-                const tab = document.getElementById(section + 'Tab');
-                if (sectionId === section) {
-                    content.style.display = 'block';
-                    tab.style.backgroundColor = 'Green';
-                } else {
-                    content.style.display = 'none';
-                    tab.style.backgroundColor = '';
-                }
-            });
-        }
-    </script>
-      <script>
-        function updateTraderId(action) {
-            var traderIdElement = document.getElementById("traderId");
-            var traderId = "TR123";  // Default trader ID
-            if (action === "buy") {
-                traderId = "TR456";  // Change trader ID for Buy action
-            } else if (action === "sell") {
-                traderId = "TR789";  // Change trader ID for Sell action
-            }
-            traderIdElement.textContent = traderId;
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Combined Page</title>
+<style>
+/* Style the table */
+table {
+  width: 100%;
+ /*  border-collapse: collapse; */
+}
+
+/* Style the table header */
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+
+/* Apply alternative background colors to table columns */
+tr:nth-child(odd) {
+  background-color: #f2f2f2; /* Even columns */
+}
+
+
+
+/* Style the table header on small screens */
+@media screen and (max-width: 600px) {
+  th, td {
+    display: block;
+    width: 100%;
+  }
+}
+</style>
 </head>
 <body>
     <div id="executedOrdersContent" >
@@ -44,44 +42,19 @@
              <tr style="background-color: Green;">
             <th>Time</th>
             <th>Type</th>
-            <th>Instrument</th>
             <th>Product</th>
             <th>Quantity</th>
             <th>Average Price</th>
-            <th>Status</th>
+            <th>Average Value</th>
         </tr>
         {% for order in orders %}
         <tr style="background-color: Yellow;">
             <td>{{ order.time }}</td>
             <td>{{ order.type }}</td>
-            <td>{{ order.symbol }}</td>
-            <td>{{ order.product }}</td>
+            <td>{{ order.Stock }}</td>
             <td>{{ order.quantity }}</td>
-            <td>{{ order.average_price }}</td>
-            <td>{{ order.status }}</td>
-        </tr>
-        {% endfor %}
-        </table>
-        <h1>Traders<span id="traderId"> </span></h1>
-        <table>
-            <tr style="background-color: Green;">
-            <th>Trader ID</th>
-            <th>Type</th>
-            <th>Instrument</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Order ID</th>
-            <th>Average Price</th>
-        </tr>
-        {% for order in orders %}
-        <tr style="background-color: Yellow;">
-            <td><span id="traderId">TR123</span></td>
-            <td>{{ order.type }}</td>
-            <td>{{ order.symbol }}</td>
-            <td>{{ order.product }}</td>
-            <td>{{ order.quantity }}</td>
-            <td>{{ order.order_id }}</td>
-            <td>{{ order.average_price }}</td>
+            <td>{{ order.AVG_price }}</td>
+            <td>{{ order.AVG_cost }}</td>
         </tr>
         {% endfor %}
         </table>
