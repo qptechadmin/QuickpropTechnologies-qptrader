@@ -81,9 +81,9 @@ def feedback():
     return render_template('feedback.html')
 
 @app.route('/trade')
-
+@login_required
 def profile():
-    if not g.user:
+    if not session['username']:
         return redirect(url_for('login'))
 
     return render_template('trade.html')
@@ -332,6 +332,7 @@ def dashboard_page():
     return render_template('dashboard.html')
 
 @app.route('/executed_orders')
+@login_required
 def executed_orders_page():
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
@@ -345,7 +346,7 @@ def executed_orders_page():
 
 @app.route('/logout')
 def logout():
-     session.pop('username',None)
+     session.pop('user_id',None)
      return render_template('login.html')
 
 def run_app(port):
