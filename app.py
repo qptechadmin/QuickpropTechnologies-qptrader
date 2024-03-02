@@ -27,10 +27,7 @@ class User:
     def __repr__(self):
         return f'<User: {self.username}>'
 
-users = []
-users.append(User(id=1, username='Avinash', password='Shivanna'))
-users.append(User(id=2, username='Becca', password='secret'))
-users.append(User(id=3, username='Carlos', password='somethingsimple'))
+users = {'qptrader': 'QPtrader'}
 
 
 app = Flask(__name__)
@@ -61,8 +58,7 @@ def before_request():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        session.pop('user_id', None)
-        if session['user_id'] not in session:
+        if session['username'] not in session:
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -70,14 +66,11 @@ def login_required(f):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        session.pop('user_id', None)
-
         username = request.form['username']
         password = request.form['password']
-        
-        user = [x for x in users if x.username == username][0]
-        if user and user.password == password:
-            session['user_id'] = user.id
+
+        if username in users and users[username] == password:
+            session['username'] = username
             return redirect(url_for('profile'))
 
         return redirect(url_for('login'))
