@@ -46,7 +46,7 @@ mydb = mysql.connector.connect(
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session['username'] not in session:
+        if 'username' not in session:
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -57,7 +57,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = get_user_credentials(username)
-        if user and user[2] == password: 
+        if user and user[1] == password:
             session['username'] = username
             return redirect(url_for('profile'))
         else:
@@ -245,6 +245,7 @@ def get_last_traded_price_and_profit_loss():
     else:
         return ('', 404)
 @app.route('/place_buy_order', methods=['POST'])
+@login_required
 def place_buy_order():
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
@@ -284,6 +285,7 @@ def place_buy_order():
 
 
 @app.route('/place_sell_order', methods=['POST'])
+@login_required
 def place_sell_order():
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
@@ -322,10 +324,12 @@ def place_sell_order():
 
 
 @app.route('/position_details')
+@login_required
 def position_details_page():
     return render_template('position_details.html', positions=position_details)
 
 @app.route('/dashboard')
+@login_required
 def dashboard_page():
     return render_template('dashboard.html')
 
