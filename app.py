@@ -27,9 +27,6 @@ class User:
     def __repr__(self):
         return f'<User: {self.username}>'
 
-users = {'user1': 'password1', 'user2': 'password2'}
-
-
 app = Flask(__name__)
 app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 
@@ -81,7 +78,7 @@ def feedback():
 def profile():
     if 'username' in session:
         return render_template('trade.html')
-    return render_template('trade.html')
+    return render_template('login.html')
 
 executed_orders = []
 position_details = []  # Replace with your actual symbols
