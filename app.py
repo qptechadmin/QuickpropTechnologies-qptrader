@@ -56,7 +56,8 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username in users and users[username] == password:
+        user = get_user_credentials(username)
+        if user and user[2] == password: 
             session['username'] = username
             return redirect(url_for('profile'))
         else:
@@ -194,7 +195,7 @@ def get_user_credentials(username):
     cursor.execute(sql_query, (username,))
 
     # Fetch all rows from the result set
-    results = cursor.fetchall()
+    results = cursor.fetchone()
 
     # Close cursor and connection
     cursor.close()
