@@ -21,8 +21,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: hsl(111, 100%, 50%);
-            color: #f5f5f5;;
+            background-color: #133b0c;
+            color: #f5f5f5;
             margin: 10px;
             transition: background-color 0.3s ease;
         }
@@ -47,7 +47,7 @@
             title: 'Order Confirmation',
             text: message,
             icon: 'success',
-            timer: 5000, // Auto close the alert after 5 seconds (adjust as needed)
+            timer: 10000, // Auto close the alert after 5 seconds (adjust as needed)
             timerProgressBar: true,
             showConfirmButton: false
         });
@@ -107,24 +107,10 @@
         </div>
     </div>
     <div>
-    <button class="button button5" id="buyButton">Reset</button>
-    <button class="button button4" id="sellButton">Home</button>
-    </div>
+      <button class="button button5"> <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('executedOrders')">Orders</a> </button>
+      <button class="button button5"> <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('position_details')">Positions</a> </button>
+      <button class="button button5" > <a href="{{url_for('logout')}}">Logout</a> </button>
     </center>
-   <div class="field">
-           <div class="field">
-                 <p class="control" center>
-                   <button >
-			   <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('executedOrders')">Orders</a>
-                   </button>
-		   <button >
-                           <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('executedOrders')">Positions</a>
-                   </button>
-		   <button >
-                     <a href="{{url_for('logout')}}">Logout</a>
-                   </button>
-                 </p>
-               </div>
-               </div>
+    </div>
 </body>
 </html>
