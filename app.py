@@ -61,7 +61,7 @@ def login():
         password = request.form['password']
         if username in users and users[username] == password:
             session['username'] = username
-            return redirect(url_for('home'))
+            return redirect(url_for('profile'))
         else:
             return render_template('login.html', message='Invalid username or password')
     return render_template('login.html', message='')
@@ -78,11 +78,9 @@ def feedback():
     return render_template('feedback.html')
 
 @app.route('/trade')
-@login_required
 def profile():
-    if not session['username']:
-        return redirect(url_for('login'))
-
+    if 'username' in session:
+        return render_template('trade.html')
     return render_template('trade.html')
 
 executed_orders = []
@@ -91,7 +89,7 @@ position_details = []  # Replace with your actual symbols
 @app.route('/')
 def home():
     if 'username' in session:
-        return f'Logged in as {session["username"]} <br> <a href="/logout">Logout</a>'
+        return render_template('trade.html')
     return redirect(url_for('login'))
 
 def get_actual_executed_price(order_id):
