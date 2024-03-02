@@ -30,7 +30,7 @@
         .button2 {background-color: #008CBA;} /* Blue */
         .button3 {background-color: #f44336;} /* Red */
         .button4 {background-color: #e7e7e7; color: black;} /* Gray */
-        .button5 {background-color: #555555;} /* Black */
+        .button5 {background-color: #555555; color: #ffffff;} /* white */
 
         button:hover {
             background-color: #0056b3;
@@ -108,7 +108,7 @@
     </div>
     <div>
       <button class="button button5"> <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('executedOrders')">Orders</a> </button>
-      <button class="button button5"> <a href="/executed_orders" id="executedOrdersTab" onclick="showSection('position_details')">Positions</a> </button>
+      <button class="button button5"> <a href="/position_details" id="executedOrdersTab" onclick="showSection('position_details')">Positions</a> </button>
       <button class="button button5" > <a href="{{url_for('logout')}}">Logout</a> </button>
     </center>
     </div>
