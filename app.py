@@ -56,6 +56,14 @@ def before_request():
         user = [x for x in users if x.id == session['user_id']][0]
         g.user = user
         
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        session.pop('user_id', None)
+        if session['user_id'] not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -75,15 +83,18 @@ def login():
     return render_template('login.html')
 # Breathing page
 @app.route('/breathing1')
+@login_required
 def breathing1():
  return render_template('breathing.html')
 
 # Feedback page
 @app.route('/feedback')
+@login_required
 def feedback():
     return render_template('feedback.html')
 
 @app.route('/trade')
+@login_required
 def profile():
     if not g.user:
         return redirect(url_for('login'))
@@ -104,9 +115,6 @@ def get_actual_executed_price(order_id):
         return order_data['data']['average_price']
     else:
         raise Exception(response)
-
-
-
 
 def get_last_traded_price(stock_symbol):
 
@@ -188,6 +196,7 @@ def updatedb(data):
     mycursor.close()
 
 @app.route('/get_last_traded_price_and_profit_loss')
+@login_required
 def get_last_traded_price_and_profit_loss():
     stock_symbol = request.args.get('symbol')
     last_traded_price = get_last_traded_price(stock_symbol)
@@ -228,6 +237,7 @@ def get_last_traded_price_and_profit_loss():
     else:
         return ('', 404)
 @app.route('/place_buy_order', methods=['POST'])
+@login_required
 def place_buy_order():
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
@@ -267,6 +277,7 @@ def place_buy_order():
 
 
 @app.route('/place_sell_order', methods=['POST'])
+@login_required
 def place_sell_order():
     kite = KiteConnect(api_key=api_key)
     kite.set_access_token(access_token)
@@ -305,14 +316,17 @@ def place_sell_order():
 
 
 @app.route('/position_details')
+@login_required
 def position_details_page():
     return render_template('position_details.html', positions=position_details)
 
 @app.route('/dashboard')
+@login_required
 def dashboard_page():
     return render_template('dashboard.html')
 
 @app.route('/executed_orders')
+@login_required
 def executed_orders_page():
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
