@@ -270,14 +270,14 @@ def place_buy_order():
         average_price = trade_details[0]['average_price']
         average_cost = average_price * quantity
         data = [
-        ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost, order_id),
+        ( session['username'], stock_symbol, quantity, average_price, 'buy', average_cost, order_id),
         ]
         updatedb(data)
         return render_template('trade.html', order_confirmation=f"buy order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( 'qptrader', stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
+        ( session['username'], stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
         ]
         updatedb(data)
         return render_template('trade.html', error_message=result)
@@ -310,14 +310,14 @@ def place_sell_order():
         average_price = trade_details[0]['average_price']
         average_cost = average_price * quantity
         data = [
-        ( 'qptrader', stock_symbol, quantity, average_price, 'sell', average_cost, order_id),
+        ( session['username'], stock_symbol, quantity, average_price, 'sell', average_cost, order_id),
         ]
         updatedb(data)
         return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( 'qptrader', stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
+        ( session['username'], stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
         ]
         updatedb(data)
         return render_template('trade.html', error_message=result)
