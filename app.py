@@ -7,7 +7,6 @@ from flask import (
     request,
     session,
     url_for
-    
 )
 from datetime import datetime
 import requests
@@ -16,6 +15,7 @@ import threading
 import time
 import mysql.connector
 import os
+
 class User: 
     def __init__(self, id, username, password):
         self.id = id
@@ -38,6 +38,7 @@ app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 api_key = "nou76gvyfsugbu6q"
 access_token = "vUNA5Rax5fZf8patweFpahXnJKGzUo3x"
 BASE_URL = 'https://kite.zerodha.com/'
+
 # Establish connection to the database
 mydb = mysql.connector.connect(
   host="localhost",
@@ -150,6 +151,7 @@ def p_n_l():
     else:
         return None
 
+
 def quantity():
 
     # Replace with the actual API endpoint provided by Zerodha for last pnl price
@@ -170,6 +172,20 @@ def quantity():
         return quantity
     else:
         return None
+
+def updatedb(data):
+    #Create a cursor object to execute queries
+    mycursor = mydb.cursor()
+    # Define the SQL query to insert data into the trades table
+    sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
+    # Execute the query for each set of data
+    mycursor.executemany(sql, data)   
+    # Commit the changes to the database
+    mydb.commit()
+    # Print the number of rows inserted
+    print(mycursor.rowcount, "rows inserted.")
+    # Close the cursor and connection
+    mycursor.close()
 
 @app.route('/get_last_traded_price_and_profit_loss')
 def get_last_traded_price_and_profit_loss():
@@ -219,7 +235,7 @@ def place_buy_order():
     stock_symbol = request.form['stockSymbolBuy']
     quantity = int(request.form['quantity'])
 
-    # Define order details for a market buy order
+    # Define order details for a market sell order
     order_details = {
         "tradingsymbol": stock_symbol,
         "exchange": "NSE",
@@ -233,87 +249,21 @@ def place_buy_order():
         last_traded_price = get_last_traded_price(stock_symbol)
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
-        profit_loss = p_n_l
         average_price = trade_details[0]['average_price']
         average_cost = average_price * quantity
-        # Create a cursor object to execute queries
-        mycursor = mydb.cursor()
         data = [
         ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost),
         ]
-
-        # Define the SQL query to insert data into the trades table
-        sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
-    
-        # Execute the query for each set of data
-        mycursor.executemany(sql, data)
-
-        # Commit the changes to the database
-        mydb.commit()
-
-
-        # Close the cursor and connection
-        mycursor.close()
-
-        if trade_details:
-            average_price = trade_details[0]['average_price']
-
-            if last_traded_price is not None:
-                if order_details['transaction_type'] == 'BUY':
-                    profit_loss = (last_traded_price - average_price) * quantity
-
-                    if average_price != 0:
-                        change_percentage = ((last_traded_price - average_price) / average_price) * 100
-                    else:
-                        change_percentage = 0.0
-
-                executed_orders.append({
-                    'type': 'BUY',
-                    'symbol': stock_symbol,
-                    'quantity': quantity,
-                    'order_id': order_id,
-                    'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'product': order_details['product'],
-                    'average_price': average_price,
-                    'status': 'Complete'
-                })
-
-                # Fetch position details
-                positions = kite.positions()['day']
-                
-                # Update the position's average price
-                for position in positions:
-                    if position['tradingsymbol'] == stock_symbol:
-                        existing_position = next((p for p in position_details if p['symbol'] == stock_symbol), None)
-
-                        if existing_position:
-                            # Update the existing position with the new buy details
-                            #existing_position['quantity'] += quantity
-                            existing_position['average_price'] = position['average_price']
-                        else:
-                            # Create a new position for the stock if it doesn't exist
-                            position_details.append({
-                                'product': order_details['product'],
-                                'type': 'Buy',
-                                'symbol': stock_symbol,
-                                'quantity': quantity,
-                                'average_price': position['average_price'],
-                                'last_traded_price': last_traded_price,
-                                'profit_loss': profit_loss,
-                                'change': change_percentage
-                            })
-
-                return render_template('trade.html', order_confirmation=f"Buy order placed successfully. Order ID: {order_id}")
-
-            else:
-                result = "Error fetching last traded price."
-        else:
-            result = "Error fetching trade details."
-
+        updatedb(data)
+        return render_template('trade.html', order_confirmation=f"buy order placed successfully. Order ID: {order_id}")
     except Exception as e:
-        result = f"Error placing buy order: {e}"
+        result = f"Error placing sell order: {e}"
+        data = [
+        ( 'qptrader', stock_symbol, quantity, "orderfailed", 'buy', e),
+        ]
+        updatedb(data)
+        return render_template('trade.html', error_message=result)
 
-    return render_template('trade.html', error_message=result)
 
 
 @app.route('/place_sell_order', methods=['POST'])
@@ -338,85 +288,20 @@ def place_sell_order():
         last_traded_price = get_last_traded_price(stock_symbol)
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
-        profit_loss = p_n_l
         average_price = trade_details[0]['average_price']
         average_cost = average_price * quantity
-        # Create a cursor object to execute queries
-        mycursor = mydb.cursor()
         data = [
         ( 'qptrader', stock_symbol, quantity, average_price, 'sell', average_cost),
         ]
-
-        # Define the SQL query to insert data into the trades table
-        sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
-
-        # Execute the query for each set of data
-        mycursor.executemany(sql, data)
-    
-        # Commit the changes to the database
-        mydb.commit()
-
-        # Print the number of rows inserted
-        print(mycursor.rowcount, "rows inserted.")
-
-        # Close the cursor and connection
-        mycursor.close()
-
-        if trade_details:
-            average_price = trade_details[0]['average_price']
-
-            if last_traded_price is not None:
-                if order_details['transaction_type'] == 'SELL':
-                    profit_loss = (average_price - last_traded_price) * quantity
-
-                    if average_price != 0:
-                        change_percentage = ((average_price - last_traded_price) / average_price) * 100
-                    else:
-                        change_percentage = 0.0
-
-                executed_orders.append({
-                    'type': 'SELL',
-                    'symbol': stock_symbol,
-                    'quantity': quantity,
-                    'order_id': order_id,
-                    'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'product': order_details['product'],
-                    'average_price': average_price,
-                    'status': 'Complete'
-                })
-                existing_position = next((p for p in position_details if p['symbol'] == stock_symbol), None)
-
-                if existing_position:
-                    # Update the existing position with the new sell details
-                    #existing_position['quantity'] -= quantity
-                    existing_position['average_price'] = average_price
-                    existing_position['profit_loss'] = profit_loss
-                    existing_position['change_percentage'] = change_percentage
-
-                else:
-                    # Create a new position for the stock if it doesn't exist (this should not typically happen for a sell order)
-                    position_details.append({
-                        'product': order_details['product'],
-                        'type': 'Sell',
-                        'symbol': stock_symbol,
-                        'quantity': quantity,  # Indicate a sell with negative quantity
-                        'average_price': average_price,
-                        'last_traded_price': last_traded_price,
-                        'profit_loss': p_n_l,
-                        'change_percentage': change_percentage
-                    })
-                return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
-            else:
-                result = "Error fetching last traded price."
-        else:
-            result = "Error fetching trade details."
-
-            return render_template('trade.html', error_message=result)
-
+        updatedb(data)
+        return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
-
-    return result
+        data = [
+        ( 'qptrader', stock_symbol, quantity, "orderfailed", 'sell', e),
+        ]
+        updatedb(data)
+        return render_template('trade.html', error_message=result)
 
 
 @app.route('/position_details')
@@ -431,13 +316,10 @@ def dashboard_page():
 def executed_orders_page():
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
-
     # Execute the query to fetch data from the trades table
     mycursor.execute("SELECT * FROM trades")
-
     # Fetch all rows of the result
     data = mycursor.fetchall()
-
     # Close the cursor
     mycursor.close()
     return render_template('executed_orders.html', orders=data)
