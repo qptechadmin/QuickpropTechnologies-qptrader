@@ -44,7 +44,8 @@ mydb = mysql.connector.connect(
   host="localhost",
   user= os.getenv("QP_USER_NAME"),
   password= os.getenv("QP_PASSWORD"),
-  database="mydatabase"
+  database="
+  "
 )
 
 
@@ -176,7 +177,7 @@ def quantity():
 def updatedb(data):
     #Create a cursor object to execute queries
     mycursor = mydb.cursor()
-    # Define the SQL query to insert data into the trades table
+    # Define the SQL quALTERery to insert data into the trades table
     sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
     # Execute the query for each set of data
     mycursor.executemany(sql, data)   
@@ -252,14 +253,14 @@ def place_buy_order():
         average_price = trade_details[0]['average_price']
         average_cost = average_price * quantity
         data = [
-        ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost),
+        ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost, order_id),
         ]
         updatedb(data)
         return render_template('trade.html', order_confirmation=f"buy order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( 'qptrader', stock_symbol, quantity, "orderfailed", 'buy', e),
+        ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost, "order Failed"),
         ]
         updatedb(data)
         return render_template('trade.html', error_message=result)
@@ -291,14 +292,14 @@ def place_sell_order():
         average_price = trade_details[0]['average_price']
         average_cost = average_price * quantity
         data = [
-        ( 'qptrader', stock_symbol, quantity, average_price, 'sell', average_cost),
+        ( 'qptrader', stock_symbol, quantity, average_price, 'sell', average_cost, order_id),
         ]
         updatedb(data)
         return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( 'qptrader', stock_symbol, quantity, "orderfailed", 'sell', "order failed"),
+        ( 'qptrader', stock_symbol, quantity, average_price, 'buy', average_cost, "order Failed"),
         ]
         updatedb(data)
         return render_template('trade.html', error_message=result)
