@@ -27,7 +27,7 @@ class User:
     def __repr__(self):
         return f'<User: {self.username}>'
 
-users = {'qptrader': 'QPtrader'}
+users = {'user1': 'password1', 'user2': 'password2'}
 
 
 app = Flask(__name__)
@@ -59,15 +59,12 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        #user_credentials = get_user_credentials(username)
-
-        if  password == "abc":
+        if username in users and users[username] == password:
             session['username'] = username
-            return redirect(url_for('profile'))
-
-        return redirect(url_for('login'))
-
-    return render_template('login.html')
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', message='Invalid username or password')
+    return render_template('login.html', message='')
 # Breathing page
 @app.route('/breathing1')
 @login_required
