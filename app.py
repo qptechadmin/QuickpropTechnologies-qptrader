@@ -9,12 +9,14 @@ from flask import (
     url_for
 )
 from datetime import datetime
-import requests
+from functools import wraps
 from kiteconnect import KiteConnect
 import threading
 import time
 import mysql.connector
+import requests
 import os
+
 
 class User: 
     def __init__(self, id, username, password):
