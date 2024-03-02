@@ -44,8 +44,7 @@ mydb = mysql.connector.connect(
   host="localhost",
   user= os.getenv("QP_USER_NAME"),
   password= os.getenv("QP_PASSWORD"),
-  database="
-  "
+  database="mydatabase"
 )
 
 
