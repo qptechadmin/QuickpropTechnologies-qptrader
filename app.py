@@ -88,6 +88,11 @@ def profile():
 executed_orders = []
 position_details = []  # Replace with your actual symbols
 
+@app.route('/')
+def home():
+    if 'username' in session:
+        return f'Logged in as {session["username"]} <br> <a href="/logout">Logout</a>'
+    return redirect(url_for('login'))
 
 def get_actual_executed_price(order_id):
     endpoint = f'{BASE_URL}oms/orders/trades?order_id={order_id}'
