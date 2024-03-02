@@ -35,6 +35,10 @@
    background-color: #4CAF50;
    cursor: pointer;
  }
+ .error-message {
+            color: white;
+            text-align: center;
+        }
  @media only screen and (max-width: 600px) {
  .ftr-position{
    position: initial;
@@ -68,7 +72,7 @@
      <!--Gif-->
      <p style="text-align: center;"><img src="https://media.tenor.com/images/1274f2ea9ede2123edc8e8c169fc8104/tenor.gif" alt="COVID-19 Vaccine Finder" width="85"/></p>
      {% if message %}
-    <p style="color: red;">{{ message }}</p>
+     <p style="color: white; text-align: center;">{{ message }}</p>
     {% endif %}
      <section class="hero is-info is-fullheight">
    <div class="hero-body">
