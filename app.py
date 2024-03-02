@@ -59,8 +59,9 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        user_credentials = get_user_credentials(username)
 
-        if username in users and users[username] == password:
+        if  user_credentials == password:
             session['username'] = username
             return redirect(url_for('profile'))
 
@@ -180,6 +181,29 @@ def updatedb(data):
     print(mycursor.rowcount, "rows inserted.")
     # Close the cursor and connection
     mycursor.close()
+
+def get_user_credentials(username):
+    # Establish connection to the MySQL database
+    # Replace 'your_host', 'your_username', 'your_password', and 'your_database' with your actual database credentials
+    connection = mydb
+
+    # Create a cursor object to execute SQL queries
+    cursor = connection.cursor()
+
+    # Define the SQL query to retrieve username and password from the users table
+    sql_query = "SELECT username, password FROM users WHERE username = %s"
+
+    # Execute the SQL query
+    cursor.execute(sql_query, (username,))
+
+    # Fetch all rows from the result set
+    results = cursor.fetchall()
+
+    # Close cursor and connection
+    cursor.close()
+
+    # Return the results
+    return results
 
 @app.route('/get_last_traded_price_and_profit_loss')
 @login_required
