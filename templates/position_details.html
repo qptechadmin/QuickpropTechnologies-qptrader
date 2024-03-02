@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 <head>
     <title>Position Details</title>
     <style>
@@ -11,6 +13,13 @@
         .loss {
             color: red;
         }
+    /* Style the table header on small screens */
+    @media screen and (max-width: 600px) {
+    th, td {
+        display: block;
+        width: 100%;
+    }
+    }
     </style>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script>
     var averagePriceOfBuy;
