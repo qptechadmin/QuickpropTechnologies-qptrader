@@ -61,7 +61,7 @@ def login():
         password = request.form['password']
         #user_credentials = get_user_credentials(username)
 
-        if  user_credentials == "abc":
+        if  password == "abc":
             session['username'] = username
             return redirect(url_for('profile'))
 
