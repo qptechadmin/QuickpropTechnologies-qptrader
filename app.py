@@ -298,7 +298,7 @@ def place_sell_order():
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( 'qptrader', stock_symbol, quantity, "orderfailed", 'sell', e),
+        ( 'qptrader', stock_symbol, quantity, "orderfailed", 'sell', "order failed"),
         ]
         updatedb(data)
         return render_template('trade.html', error_message=result)
