@@ -343,7 +343,7 @@ def executed_orders_page():
 
 @app.route('/logout')
 def logout():
-     session.pop('user_id',None)
+     session.pop('username',None)
      return render_template('login.html')
 
 def run_app(port):
