@@ -177,7 +177,7 @@ def updatedb(data):
     #Create a cursor object to execute queries
     mycursor = mydb.cursor()
     # Define the SQL quALTERery to insert data into the trades table
-    sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost) VALUES (%s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     # Execute the query for each set of data
     mycursor.executemany(sql, data)   
     # Commit the changes to the database
