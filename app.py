@@ -179,14 +179,14 @@ def place_buy_order():
         data = [
         ( session['username'], stock_symbol, quantity, average_price, 'buy', average_cost, order_id),
         ]
-        updatedb(data)
+        mysqlconnection.updatedb(data)
         return render_template('trade.html', order_confirmation=f"buy order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
         ( session['username'], stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
         ]
-        updatedb(data)
+        mysqlconnection.updatedb(data)
         return render_template('trade.html', error_message=result)
 
 @app.route('/place_sell_order', methods=['POST'])

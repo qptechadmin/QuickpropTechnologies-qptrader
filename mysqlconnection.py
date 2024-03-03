@@ -21,8 +21,6 @@ def updatedb(data):
     mycursor.executemany(sql, data)   
     # Commit the changes to the database
     mydb.commit()
-    # Print the number of rows inserted
-    print(mycursor.rowcount, "rows inserted.")
     # Close the cursor and connection
     mycursor.close()
 
