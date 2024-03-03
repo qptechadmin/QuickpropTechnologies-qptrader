@@ -48,7 +48,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = mysql.get_user_credentials(username)
+        user = mysqlconnection.get_user_credentials(username)
         if user and user[1] == password:
             session['username'] = username
             return redirect(url_for('profile'))
@@ -217,14 +217,14 @@ def place_sell_order():
         data = [
         ( session['username'], stock_symbol, quantity, average_price, 'sell', average_cost, order_id),
         ]
-        mysql.updatedb(data)
+        mysqlconnection.updatedb(data)
         return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
         ( session['username'], stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
         ]
-        mysql.updatedb(data)
+        mysqlconnection.updatedb(data)
         return render_template('trade.html', error_message=result)
 
 @app.route('/position_details')
@@ -240,7 +240,7 @@ def dashboard_page():
 @app.route('/executed_orders')
 @login_required
 def executed_orders_page():
-    return render_template('executed_orders.html', orders=mysql.executed_orders(session['username']))
+    return render_template('executed_orders.html', orders=mysqlconnection.executed_orders(session['username']))
 
 @app.route('/logout')
 def logout():
