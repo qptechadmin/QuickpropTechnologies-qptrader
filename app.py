@@ -15,7 +15,7 @@ import threading
 import time
 import requests
 import os
-import mysql
+import mysqlconnection
 
 class User: 
     def __init__(self, id, username, password):
