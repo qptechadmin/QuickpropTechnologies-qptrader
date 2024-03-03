@@ -13,10 +13,9 @@ from functools import wraps
 from kiteconnect import KiteConnect
 import threading
 import time
-import mysql.connector
 import requests
 import os
-
+import mysql
 
 class User: 
     def __init__(self, id, username, password):
@@ -34,15 +33,8 @@ app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 api_key = "nou76gvyfsugbu6q"
 access_token = "vUNA5Rax5fZf8patweFpahXnJKGzUo3x"
 BASE_URL = 'https://kite.zerodha.com/'
+position_details = []  # Replace with your actual symbols      
 
-# Establish connection to the database
-mydb = mysql.connector.connect(
-  host="localhost",
-  user= os.getenv("QP_USER_NAME"),
-  password= os.getenv("QP_PASSWORD"),
-  database="mydatabase"
-)
-        
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -56,13 +48,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = get_user_credentials(username)
+        user = mysql.get_user_credentials(username)
         if user and user[1] == password:
             session['username'] = username
             return redirect(url_for('profile'))
         else:
             return render_template('login.html', message='Invalid username or password')
     return render_template('login.html', message='')
+
 # Breathing page
 @app.route('/breathing1')
 @login_required
@@ -80,9 +73,6 @@ def profile():
     if 'username' in session:
         return render_template('trade.html')
     return render_template('login.html')
-
-executed_orders = []
-position_details = []  # Replace with your actual symbols
 
 @app.route('/')
 def home():
@@ -102,7 +92,6 @@ def get_actual_executed_price(order_id):
         raise Exception(response)
 
 def get_last_traded_price(stock_symbol):
-
     # Replace with the actual API endpoint provided by Zerodha for last traded price
     api_url = f"https://api.kite.trade/quote/ltp?i=NSE:{stock_symbol}"
     
@@ -111,97 +100,14 @@ def get_last_traded_price(stock_symbol):
         "X-Kite-Version": "3",
         "Authorization": f"token {api_key}:{access_token}"
     }
-
     # Make an API request
     response = requests.get(api_url, headers=headers)
-
     if response.status_code == 200:
         data = response.json()
         last_traded_price = data["data"]["NSE:" + stock_symbol]["last_price"]
         return last_traded_price
     else:
         return None
-
-
-def p_n_l():
-
-    # Replace with the actual API endpoint provided by Zerodha for last pnl price
-    api_url = f"https://api.kite.trade/portfolio/positions"
-
-    # Include your API key in the headers
-    headers = {
-        "X-Kite-Version": "3",
-        "Authorization": f"token {api_key}:{access_token}"
-    }
-
-    # Make an API request
-    response = requests.get(api_url, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        p_n_l = data["net"]["pnl"]
-        return p_n_l
-    else:
-        return None
-
-
-def quantity():
-
-    # Replace with the actual API endpoint provided by Zerodha for last pnl price
-    api_url = f"https://api.kite.trade/portfolio/positions"
-
-    # Include your API key in the headers
-    headers = {
-        "X-Kite-Version": "3",
-        "Authorization": f"token {api_key}:{access_token}"
-    }
-
-    # Make an API request
-    response = requests.get(api_url, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        quantity = data["net"]["quantity"]
-        return quantity
-    else:
-        return None
-
-def updatedb(data):
-    #Create a cursor object to execute queries
-    mycursor = mydb.cursor()
-    # Define the SQL quALTERery to insert data into the trades table
-    sql = "INSERT INTO trades (user, Stock, quantity, AVG_price, type, AVG_cost, status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    # Execute the query for each set of data
-    mycursor.executemany(sql, data)   
-    # Commit the changes to the database
-    mydb.commit()
-    # Print the number of rows inserted
-    print(mycursor.rowcount, "rows inserted.")
-    # Close the cursor and connection
-    mycursor.close()
-
-def get_user_credentials(username):
-    # Establish connection to the MySQL database
-    # Replace 'your_host', 'your_username', 'your_password', and 'your_database' with your actual database credentials
-    connection = mydb
-
-    # Create a cursor object to execute SQL queries
-    cursor = connection.cursor()
-
-    # Define the SQL query to retrieve username and password from the users table
-    sql_query = "SELECT username, password FROM users WHERE username = %s"
-
-    # Execute the SQL query
-    cursor.execute(sql_query, (username,))
-
-    # Fetch all rows from the result set
-    results = cursor.fetchone()
-
-    # Close cursor and connection
-    cursor.close()
-
-    # Return the results
-    return results
 
 @app.route('/get_last_traded_price_and_profit_loss')
 @login_required
@@ -244,6 +150,7 @@ def get_last_traded_price_and_profit_loss():
         return jsonify(data)
     else:
         return ('', 404)
+
 @app.route('/place_buy_order', methods=['POST'])
 @login_required
 def place_buy_order():
@@ -282,8 +189,6 @@ def place_buy_order():
         updatedb(data)
         return render_template('trade.html', error_message=result)
 
-
-
 @app.route('/place_sell_order', methods=['POST'])
 @login_required
 def place_sell_order():
@@ -312,16 +217,15 @@ def place_sell_order():
         data = [
         ( session['username'], stock_symbol, quantity, average_price, 'sell', average_cost, order_id),
         ]
-        updatedb(data)
+        mysql.updatedb(data)
         return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
         ( session['username'], stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
         ]
-        updatedb(data)
+        mysql.updatedb(data)
         return render_template('trade.html', error_message=result)
-
 
 @app.route('/position_details')
 @login_required
@@ -336,15 +240,7 @@ def dashboard_page():
 @app.route('/executed_orders')
 @login_required
 def executed_orders_page():
-    # Create a cursor object to execute queries
-    mycursor = mydb.cursor(dictionary=True)
-    # Execute the query to fetch data from the trades table
-    mycursor.execute("SELECT * FROM trades WHERE user = %s", (session['username'],))
-    # Fetch all rows of the result
-    data = mycursor.fetchall()
-    # Close the cursor
-    mycursor.close()
-    return render_template('executed_orders.html', orders=data)
+    return render_template('executed_orders.html', orders=mysql.executed_orders(session['username']))
 
 @app.route('/logout')
 def logout():
