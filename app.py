@@ -240,7 +240,7 @@ def dashboard_page():
 @app.route('/executed_orders')
 @login_required
 def executed_orders_page():
-    return render_template('executed_orders.html', orders=mysqlconnection.executed_orders(session['username']))
+    return render_template('executed_orders.html', orders=mysqlconnection.get_executed_orders(session['username']))
 
 @app.route('/logout')
 def logout():
