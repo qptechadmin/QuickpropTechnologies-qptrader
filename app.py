@@ -18,6 +18,7 @@ import os
 import mysqlconnection
 import logging
 from decimal import Decimal
+from collections import defaultdict
 
 # Configure logging
 logging.basicConfig(filename='trading.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
