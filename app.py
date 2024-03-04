@@ -115,27 +115,6 @@ def get_last_traded_price(stock_symbol):
     else:
         return None
 
-@app.route('/get_last_traded_price_and_profit_loss')
-@login_required
-def get_last_traded_price_and_profit_loss():
-    stock_symbol = request.args.get('symbol')
-    #last_traded_price = get_last_traded_price(stock_symbol)
-    last_traded_price = 10
-    # Calculate net PNL and M2M for each stock
-    net_pnl = {}
-    m2m = {}
-    for trade in trades:
-        stock = trade[2]
-        quantity = trade[3]
-        avg_price = trade[4]
-        pnl = (avg_price - last_traded_price) * quantity
-        if trade[5] == 'sell':
-            pnl *= -1  # Reverse PNL sign for sell trades
-        net_pnl[stock] = net_pnl.get(stock, 0) + pnl
-        m2m[stock] = m2m.get(stock, 0) + (avg_price - last_traded_price) * quantity
-
-    return render_template('index.html', trades=trades, net_pnl=net_pnl, m2m=m2m)
-
     # Fetch the average price from the position details
     position = next((p for p in position_details if p['symbol'] == stock_symbol), None)
     if position:
@@ -189,7 +168,6 @@ def place_buy_order():
     }
 
     try:
-        last_traded_price = get_last_traded_price(stock_symbol)
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
         average_price = trade_details[0]['average_price']
@@ -228,7 +206,6 @@ def place_sell_order():
     }
 
     try:
-        last_traded_price = get_last_traded_price(stock_symbol)
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
         average_price = trade_details[0]['average_price']
@@ -250,9 +227,13 @@ def place_sell_order():
 @login_required
 def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
+    last_traded_price = get_last_traded_price(stock_symbol)
     # Assuming the last traded prices for each stock
-    last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
-    realized_pnl = {}
+    last_traded_prices = {'SUNPHARMA': Decimal('0.00'), 'WIPRO': Decimal('0.00'), 'TCS': Decimal('0.00'), 'INFY': Decimal('0.00')}
+# Iterate through the data and fetch the last traded price for each unique stock symbol
+    for stock_symbol in last_traded_prices:
+        if last_traded_prices[stock_symbol] == Decimal('0.00'):
+            last_traded_prices[stock_symbol] = get_last_traded_price(stock_symbol)
     unrealized_pnl = {}
     pnl_m2m = {}
     available_quantity = {}
