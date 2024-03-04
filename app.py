@@ -288,8 +288,10 @@ def position_details_page():
         pnl_m2m[stock]['m2m'] = realized_pnl[stock] + unrealized_pnl[stock]
         pnl_m2m[stock]['avg_price'] = avg_price
         pnl_m2m[stock]['last_traded_price'] = last_traded_prices.get(stock, 0)
+    # Calculate total PNL
+    total_pnl = sum(pnl_m2m[stock]['m2m'] for stock in pnl_m2m)
 
-    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity, total_pnl=realized_pnl + unrealized_pnl)
+    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity, total_pnl=total_pnl)
 
 
 @app.route('/dashboard')
