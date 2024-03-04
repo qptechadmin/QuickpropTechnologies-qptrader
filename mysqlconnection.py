@@ -41,11 +41,22 @@ def get_user_credentials(username):
     # Return the results
     return results
 
-def get_executed_orders(user):
+def get_orders(user):
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
     # Execute the query to fetch data from the trades table
     mycursor.execute("SELECT * FROM trades WHERE user = %s", (user,))
+    # Fetch all rows of the result
+    data = mycursor.fetchall()
+    # Close the cursor
+    mycursor.close()
+    return data
+
+def get_executed_orders(user):
+    # Create a cursor object to execute queries
+    mycursor = mydb.cursor(dictionary=True)
+    # Execute the query to fetch data from the trades table
+    mycursor.execute("SELECT * FROM trades WHERE user = %s AND status != 'order Failed'", (user,))
     # Fetch all rows of the result
     data = mycursor.fetchall()
     # Close the cursor
