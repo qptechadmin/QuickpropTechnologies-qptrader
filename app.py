@@ -113,15 +113,27 @@ def get_last_traded_price(stock_symbol):
 @login_required
 def get_last_traded_price_and_profit_loss():
     stock_symbol = request.args.get('symbol')
-    last_traded_price = get_last_traded_price(stock_symbol)
-    profit_loss = p_n_l
-    quantity = quantity
+    #last_traded_price = get_last_traded_price(stock_symbol)
+    last_traded_price = 10
+    # Calculate net PNL and M2M for each stock
+    net_pnl = {}
+    m2m = {}
+    for trade in trades:
+        stock = trade[2]
+        quantity = trade[3]
+        avg_price = trade[4]
+        pnl = (avg_price - last_traded_price) * quantity
+        if trade[5] == 'sell':
+            pnl *= -1  # Reverse PNL sign for sell trades
+        net_pnl[stock] = net_pnl.get(stock, 0) + pnl
+        m2m[stock] = m2m.get(stock, 0) + (avg_price - last_traded_price) * quantity
+
+    return render_template('index.html', trades=trades, net_pnl=net_pnl, m2m=m2m)
 
     # Fetch the average price from the position details
     position = next((p for p in position_details if p['symbol'] == stock_symbol), None)
     if position:
         average_price = position['average_price']
-        #quantity = position['quantity']
 
         # Calculate profit/loss and change percentage
         if position['type'] == 'Buy':
@@ -230,6 +242,8 @@ def place_sell_order():
 @app.route('/position_details')
 @login_required
 def position_details_page():
+    position_details = get_executed_orders(session['username'])
+
     return render_template('position_details.html', positions=position_details)
 
 @app.route('/dashboard')
@@ -240,7 +254,7 @@ def dashboard_page():
 @app.route('/executed_orders')
 @login_required
 def executed_orders_page():
-    return render_template('executed_orders.html', orders=mysqlconnection.get_executed_orders(session['username']))
+    return render_template('executed_orders.html', orders=mysqlconnection.get_orders(session['username']))
 
 @app.route('/logout')
 def logout():

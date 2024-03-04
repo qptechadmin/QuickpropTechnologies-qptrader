@@ -1,113 +1,40 @@
 <!DOCTYPE html>
-<html>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<html lang="en">
 <head>
-    <title>Position Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Traded Price and Profit/Loss</title>
     <style>
-         /* Add your CSS styles here */
-        .profit {
-            color: green;
+        table {
+            border-collapse: collapse;
+            width: 100%;
         }
-
-        .loss {
-            color: red;
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
         }
-    /* Style the table header on small screens */
-    @media screen and (max-width: 600px) {
-    th, td {
-        display: block;
-        width: 100%;
-    }
-    }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script>
-    var averagePriceOfBuy;
-
-    function updatePositionDetails() {
-        {% for position in positions %}
-        $.ajax({
-            url: `/get_last_traded_price_and_profit_loss?symbol={{ position.symbol }}`,
-            method: 'GET',
-            success: function (data) {
-                // Determine if it's a buy or sell position based on quantity
-                var quantity = Math.abs({{ position.quantity }});
-                var isBuy = {{ position.quantity }} > 0;
-
-                // Store the average price only for buy positions
-                if (isBuy) {
-                    averagePriceOfBuy = {{ position.average_price }};
-                }
-
-                var averagePrice = {{ position.average_price }};
-                var lastTradedPrice = data.last_traded_price;
-
-                var profitLoss;
-                if (isBuy) {
-                    profitLoss = (lastTradedPrice - averagePrice) * quantity;
-                } else {
-                    // If it's a sell position, use the difference between averagePrice and averagePriceOfBuy
-                    profitLoss = (averagePrice - averagePriceOfBuy) * quantity;
-                }
-
-                // Update the profit/loss element with the calculated P&L
-                $('#profit-loss-{{ position.symbol }}').text(profitLoss.toFixed(2));
-
-                // Update the last traded price element
-                $('#last-traded-price-{{ position.symbol }}').text(lastTradedPrice.toFixed(2));
-            
-                  // Calculate and update the change percentage
-                    if (averagePrice !== 0) {
-                        var changePercentage = ((lastTradedPrice - averagePrice) / averagePrice) * 100;
-                        $('#change-{{ position.symbol }}').text(changePercentage.toFixed(2) + '%');
-                    } else {
-                        $('#change-{{ position.symbol }}').text('0.00%');
-                    }
-                    
-                },
-                error: function (error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-            {% endfor %}
-        }
-         
-        // Call the update function initially and every 5 seconds
-        updatePositionDetails();
-        setInterval(updatePositionDetails, 3000); // Update every 5 seconds
-    </script>
 </head>
 <body>
-    <h1>Position </h1>
-      <table>
-        <tr style="background-color: Green;">
-            <th>Product</th>
-            <th>Instrument</th>
-            <th>Quantity</th>
-            <th>Average Price</th>
-            <th>Last Traded Price</th>
-            <th>Profit/Loss</th>
-            <th>Change (%)</th>
+    <h2>Last Traded Price and Profit/Loss</h2>
+    <p>Last Traded Price for Stock {{ stock_symbol }}: {{ last_traded_price }}</p>
+    <table>
+        <tr>
+            <th>Stock</th>
+            <th>Net PNL</th>
+            <th>M2M</th>
         </tr>
-        {% for position in positions %}
-        <tr style="background-color: Yellow;">
-            <td>{{ position.product }}</td>
-            <td>{{ position.symbol }}</td>
-            <td>{{ position.quantity }}</td>
-            <td>{{ position.average_price }}</td>
-            <td><span id="last-traded-price-{{ position.symbol }}">Loading...</span></td>
-            <td id="profit-loss-{{ position.symbol }}">Loading...</td>
-            <td id="change-{{ position.symbol }}">{{ position.change_percentage }}</td>
+        {% for stock, pnl in net_pnl.items() %}
+        <tr>
+            <td>{{ stock }}</td>
+            <td>{{ pnl }}</td>
+            <td>{{ m2m[stock] }}</td>
         </tr>
         {% endfor %}
     </table>
-
-    <div class="field">
-        <p class="control">
-            <button>
-                <a href="{{ url_for('profile') }}">Back to Trade</a>
-            </button>
-        </p>
-    </div>
 </body>
 </html>
