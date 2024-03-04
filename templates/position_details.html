@@ -45,7 +45,7 @@
             <td class="{% if unrealized_pnl[stock] >= 0 %}positive{% else %}negative{% endif %}">{{ unrealized_pnl[stock] }}</td>
             <td>{{ available_quantity[stock] }}</td>
             <td>{{ last_traded_prices[stock] }}</td>
-            <td class="{% if (pnl - unrealized_pnl[stock]) >= 0 %}positive{% else %}negative{% endif %}">{{ pnl - unrealized_pnl[stock] }}</td>
+            <td class="{% if (pnl - unrealized_pnl[stock]) >= 0 %}positive{% else %}negative{% endif %}">{{ pnl + unrealized_pnl[stock] }}</td>
         </tr>
         {% endfor %}
         <tr class="total">
