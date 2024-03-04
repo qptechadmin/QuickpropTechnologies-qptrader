@@ -277,13 +277,17 @@ def position_details_page():
         # Update available quantity
         available_quantity[stock] = available_quantity.get(stock, 0) + quantity
 
+        # Update total PNL and M2M
+        total_pnl += pnl
+        total_m2m += m2m
+
         # Update PNL, M2M, and avg_price
         pnl_m2m[stock]['pnl'] += pnl
         pnl_m2m[stock]['m2m'] += m2m
         pnl_m2m[stock]['avg_price'] = avg_price
         pnl_m2m[stock]['last_traded_price'] = last_traded_prices.get(stock, 0)
 
-    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity)
+    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity, total_pnl=total_pnl, total_m2m=total_m2m)
 
 
 @app.route('/dashboard')

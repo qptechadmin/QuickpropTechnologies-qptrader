@@ -4,6 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Position Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .total-row {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <h1>Position Details</h1>
@@ -19,11 +46,18 @@
         <tr>
             <td>{{ stock }}</td>
             <td>{{ available_quantity[stock] }}</td>
-            <td>{{ data['last_traded_price'] }}</td> 
-            <td>{{ data['pnl'] }}</td>
-            <td>{{ data['m2m'] }}</td>
+            <td>${{ data['last_traded_price'] }}</td> 
+            <td>${{ data['pnl'] }}</td>
+            <td>${{ data['m2m'] }}</td>
         </tr>
         {% endfor %}
+        <tr class="total-row">
+            <td>Total</td>
+            <td></td>
+            <td></td>
+            <td>${{ total_pnl }}</td>
+            <td>${{ total_m2m }}</td>
+        </tr>
     </table>
 </body>
 </html>
