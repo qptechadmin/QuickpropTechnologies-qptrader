@@ -29,7 +29,7 @@
 </head>
 <body>
     <h2>Realized and Unrealized PNL</h2>
-    <table>
+    <table id="pnl-table">
         <tr>
             <th>Stock</th>
             <th>Realized PNL</th>
@@ -57,5 +57,22 @@
             <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
         </tr>
     </table>
+    <script>
+        function updatePNL() {
+            // Make an AJAX request to fetch updated data from the server
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Update the HTML content with the new data
+                    document.getElementById("pnl-table").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "/position_details", true); // Change the URL to your server endpoint
+            xhttp.send();
+        }
+
+        // Update the PNL data every 10 seconds
+        setInterval(updatePNL, 10000); // 10000 milliseconds = 10 seconds
+    </script>
 </body>
 </html>
