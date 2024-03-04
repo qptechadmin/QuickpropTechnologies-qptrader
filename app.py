@@ -252,37 +252,30 @@ def position_details_page():
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
 
-    net_pnl = {}
-    m2m = {'total': {'quantity': 0, 'm2m': 0, 'pnl': 0}}  # Initialize total values
+    # Dictionary to store total PNL and M2M for each stock
+    pnl_m2m = defaultdict(lambda: {'pnl': Decimal('0.00'), 'm2m': Decimal('0.00')})
 
-    for trade in data:
-        stock = trade['Stock']
-        quantity = trade['quantity']
-        avg_price = trade['AVG_price']
-        trade_type = trade['type']
+    for trade in trades:
+    stock = trade['stock']
+    quantity = trade['quantity']
+    avg_price = trade['avg_price']
+    trade_type = trade['type']
+    last_price = last_traded_prices[stock]
 
-        # Calculate PNL
-        if trade_type == 'buy':
-            pnl = (last_traded_prices[stock] - avg_price) * quantity
-        else:  # Assuming the type can be 'sell' or 'buy' only
-            pnl = (avg_price - last_traded_prices[stock]) * quantity
+    # Calculate PNL
+    if trade_type == 'buy':
+        pnl = (last_price - avg_price) * quantity
+    else:  # Assuming the type can be 'sell' or 'buy' only
+        pnl = (avg_price - last_price) * quantity
 
-        # Calculate M2M
-        m2m_value = (last_traded_prices[stock] - avg_price) * quantity
+    # Calculate M2M
+    m2m = (last_price - avg_price) * quantity
 
-        # Update stock-specific values
-        m2m[stock] = {
-            'quantity': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['quantity'] + quantity,
-            'm2m': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['m2m'] + m2m_value,
-            'pnl': net_pnl.get(stock, 0) + pnl
-        }
+    # Update total PNL and M2M for the stock
+    pnl_m2m[stock]['pnl'] += pnl
+    pnl_m2m[stock]['m2m'] += m2m
 
-        # Update total values
-        m2m['total']['quantity'] += quantity
-        m2m['total']['m2m'] += m2m_value
-        m2m['total']['pnl'] += pnl
-
-    return render_template('position_details.html', m2m=m2m)
+    return render_template('position_details.html', pnl_m2m=pnl_m2m)
 
 @app.route('/dashboard')
 @login_required
