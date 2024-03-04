@@ -266,14 +266,13 @@ def position_details_page():
         if stock not in pnl_m2m:
             pnl_m2m[stock] = {'pnl': 0, 'm2m': 0, 'available_quantity': 0, 'avg_price': 0}
 
-        # Calculate PNL
+        # Calculate PNL and M2M
         if trade_type == 'sell':
             pnl = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
+            m2m = pnl  # PNL is equal to M2M for a completed trade
         else:  # Assuming the type can be 'buy' only
-            pnl = (pnl_m2m[stock]['avg_price'] - avg_price) * quantity
-
-        # Update M2M
-        m2m = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
+            pnl = 0  # Buying doesn't realize profit
+            m2m = 0
 
         # Update available quantity
         available_quantity[stock] = available_quantity.get(stock, 0) + quantity
