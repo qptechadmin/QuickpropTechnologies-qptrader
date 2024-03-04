@@ -242,9 +242,22 @@ def place_sell_order():
 @app.route('/position_details')
 @login_required
 def position_details_page():
-    position_details = mysqlconnection.get_executed_orders(session['username'])
+    trades = mysqlconnection.get_executed_orders(session['username'])
+    last_traded_price = 10
+    # Calculate net PNL and M2M for each stock
+    net_pnl = {}
+    m2m = {}
+    for trade in trades:
+        stock = trade[2]
+        quantity = trade[3]
+        avg_price = trade[4]
+        pnl = (avg_price - last_traded_price) * quantity
+        if trade[5] == 'sell':
+            pnl *= -1  # Reverse PNL sign for sell trades
+        net_pnl[stock] = net_pnl.get(stock, 0) + pnl
+        m2m[stock] = m2m.get(stock, 0) + (avg_price - last_traded_price) * quantity
 
-    return render_template('position_details.html', positions=position_details)
+    return render_template('position_details.html', trades=trades, net_pnl=net_pnl, m2m=m2m))
 
 @app.route('/dashboard')
 @login_required
