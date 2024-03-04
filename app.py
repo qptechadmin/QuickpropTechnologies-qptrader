@@ -283,7 +283,7 @@ def position_details_page():
 
     return render_template('position_details.html', realized_pnl=realized_pnl, unrealized_pnl=unrealized_pnl,
                            available_quantity=available_quantity, total_realized_pnl=total_realized_pnl,
-                           total_unrealized_pnl=total_unrealized_pnl)
+                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_realized_pnl+total_realized_pnl)
 
 
 @app.route('/dashboard')

@@ -4,16 +4,23 @@
     <title>Realized and Unrealized PNL</title>
     <style>
         table {
-            width: 50%;
+            width: 80%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
         th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
         th {
             background-color: #f2f2f2;
+        }
+        .negative {
+            color: red;
+        }
+        .total {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -25,17 +32,25 @@
             <th>Realized PNL</th>
             <th>Unrealized PNL</th>
             <th>Available Quantity</th>
+            <th>Last Traded Price</th>
         </tr>
         {% for stock, pnl in realized_pnl.items() %}
         <tr>
             <td>{{ stock }}</td>
-            <td>{{ pnl }}</td>
-            <td>{{ unrealized_pnl[stock] }}</td>
+            <td class="{% if pnl < 0 %}negative{% endif %}">{{ pnl }}</td>
+            <td class="{% if unrealized_pnl[stock] < 0 %}negative{% endif %}">{{ unrealized_pnl[stock] }}</td>
             <td>{{ available_quantity[stock] }}</td>
+            <td>{{ last_traded_prices[stock] }}</td>
         </tr>
         {% endfor %}
+        <tr class="total">
+            <td>Total</td>
+            <td>{{ total_realized_pnl }}</td>
+            <td>{{ total_unrealized_pnl }}</td>
+            <td>{{ total_pnl }}</td>
+            <td></td>
+            <td></td>
+        </tr>
     </table>
-    <h3>Total Realized PNL: {{ total_realized_pnl }}</h3>
-    <h3>Total Unrealized PNL: {{ total_unrealized_pnl }}</h3>
 </body>
 </html>
