@@ -272,7 +272,7 @@ def position_details_page():
         # Calculate realized PNL for completed trades
         if trade_type == 'sell':
             realized_pnl[stock] += (avg_price - pnl_m2m[stock]['avg_price']) * quantity
-         else:
+        else:
             realized_pnl[stock] -= (avg_price - pnl_m2m[stock]['avg_price']) * quantity
 
 
