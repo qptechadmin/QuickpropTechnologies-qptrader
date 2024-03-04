@@ -254,7 +254,7 @@ def position_details_page():
     net_pnl = {}
     m2m = {}
 
-    for trade in data:
+    for trade in trades:
         stock = trade['Stock']
         quantity = trade['quantity']
         avg_price = trade['AVG_price']
