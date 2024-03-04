@@ -280,10 +280,12 @@ def position_details_page():
 
     total_realized_pnl = sum(realized_pnl.values())
     total_unrealized_pnl = sum(unrealized_pnl.values())
+    total_pnl = total_realized_pnl + total_unrealized_pnl
+
 
     return render_template('position_details.html', realized_pnl=realized_pnl, unrealized_pnl=unrealized_pnl,
                            available_quantity=available_quantity, total_realized_pnl=total_realized_pnl,
-                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_realized_pnl-total_realized_pnl, last_traded_prices=last_traded_prices)
+                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_pnl, last_traded_prices=last_traded_prices)
 
 
 @app.route('/dashboard')
