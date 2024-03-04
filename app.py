@@ -253,30 +253,38 @@ def position_details_page():
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
 
-    # Dictionary to store total PNL and M2M for each stock
-    pnl_m2m = defaultdict(lambda: {'pnl': Decimal('0.00'), 'm2m': Decimal('0.00')})
+    pnl_m2m = {}
+    available_quantity = {}
 
     for trade in trades:
-        stock = trade['Stock']
+        stock = trade['stock']
         quantity = trade['quantity']
-        avg_price = trade['AVG_price']
+        avg_price = trade['avg_price']
         trade_type = trade['type']
-        last_price = last_traded_prices[stock]
+
+        # Initialize the dictionary for each stock if not present
+        if stock not in pnl_m2m:
+            pnl_m2m[stock] = {'pnl': 0, 'm2m': 0, 'available_quantity': 0}
 
         # Calculate PNL
-        if trade_type == 'buy':
-            pnl = (last_price - avg_price) * quantity
-        else:  # Assuming the type can be 'sell' or 'buy' only
-            pnl = (avg_price - last_price) * quantity
+        if trade_type == 'sell':
+            pnl = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
+        else:  # Assuming the type can be 'buy' only
+            pnl = (pnl_m2m[stock]['avg_price'] - avg_price) * quantity
 
-        # Calculate M2M
-        m2m = (last_price - avg_price) * quantity
+        # Update M2M
+        m2m = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
 
-        # Update total PNL and M2M for the stock
+        # Update available quantity
+        available_quantity[stock] = available_quantity.get(stock, 0) + quantity
+
+        # Update PNL, M2M, and avg_price
         pnl_m2m[stock]['pnl'] += pnl
         pnl_m2m[stock]['m2m'] += m2m
+        pnl_m2m[stock]['avg_price'] = avg_price
 
-    return render_template('position_details.html', pnl_m2m=pnl_m2m)
+    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity)
+
 
 @app.route('/dashboard')
 @login_required

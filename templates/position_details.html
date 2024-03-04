@@ -10,12 +10,14 @@
     <table border="1">
         <tr>
             <th>Stock</th>
+            <th>Available Quantity</th>
             <th>PNL</th>
             <th>M2M</th>
         </tr>
         {% for stock, data in pnl_m2m.items() %}
         <tr>
             <td>{{ stock }}</td>
+            <td>{{ available_quantity[stock] }}</td>
             <td>{{ data['pnl'] }}</td>
             <td>{{ data['m2m'] }}</td>
         </tr>
