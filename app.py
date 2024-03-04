@@ -249,7 +249,7 @@ def place_sell_order():
 def position_details_page():
     data = mysqlconnection.get_executed_orders(session['username'])
     # Assuming the last traded price
-    last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'WIPRO': Decimal('13.00')}
+    last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
 
     net_pnl = {}
     m2m = {}
