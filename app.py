@@ -264,7 +264,7 @@ def position_details_page():
 
         # Initialize the dictionary for each stock if not present
         if stock not in pnl_m2m:
-            pnl_m2m[stock] = {'pnl': 0, 'm2m': 0, 'available_quantity': 0}
+            pnl_m2m[stock] = {'pnl': 0, 'm2m': 0, 'available_quantity': 0, 'avg_price': 0}
 
         # Calculate PNL
         if trade_type == 'sell':
