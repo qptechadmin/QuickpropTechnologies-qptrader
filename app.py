@@ -262,39 +262,28 @@ def position_details_page():
         quantity = trade['quantity']
         avg_price = trade['AVG_price']
         trade_type = trade['type']
+        last_traded_price = last_traded_prices[stock]
 
-        # Initialize dictionaries for each stock if not present
         if stock not in realized_pnl:
             realized_pnl[stock] = 0
             unrealized_pnl[stock] = 0
-            pnl_m2m[stock] = {'realized_pnl': 0, 'unrealized_pnl': 0, 'm2m': 0, 'avg_price': 0, 'last_traded_price': 0}
+            available_quantity[stock] = 0
 
-        # Calculate realized PNL for completed trades
         if trade_type == 'sell':
-            realized_pnl[stock] += (avg_price - pnl_m2m[stock]['avg_price']) * quantity
+            pnl = (last_traded_price - avg_price) * quantity
+            realized_pnl[stock] += pnl
         else:
-            realized_pnl[stock] -= (avg_price - pnl_m2m[stock]['avg_price']) * quantity
-
-
-        # Calculate unrealized PNL for open positions
-        if quantity > 0:  # Long position
-            unrealized_pnl[stock] += (last_traded_prices[stock] - avg_price) * quantity
-        elif quantity < 0:  # Short position
-            unrealized_pnl[stock] += (avg_price - last_traded_prices[stock]) * quantity
-
+            unrealized_pnl[stock] += (last_traded_price - avg_price) * quantity
         # Update available quantity
-        available_quantity[stock] = available_quantity.get(stock, 0) + quantity
+        available_quantity[stock] += quantity
 
-        # Update PNL, M2M, avg_price, and last traded price
-        pnl_m2m[stock]['realized_pnl'] = realized_pnl[stock]
-        pnl_m2m[stock]['unrealized_pnl'] = unrealized_pnl[stock]
-        pnl_m2m[stock]['m2m'] = realized_pnl[stock] + unrealized_pnl[stock]
-        pnl_m2m[stock]['avg_price'] = avg_price
-        pnl_m2m[stock]['last_traded_price'] = last_traded_prices.get(stock, 0)
-    # Calculate total PNL
-    total_pnl = sum(pnl_m2m[stock]['m2m'] for stock in pnl_m2m)
 
-    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity, total_pnl=total_pnl)
+    total_realized_pnl = sum(realized_pnl.values())
+    total_unrealized_pnl = sum(unrealized_pnl.values())
+
+    return render_template('pnl.html', realized_pnl=realized_pnl, unrealized_pnl=unrealized_pnl,
+                           available_quantity=available_quantity, total_realized_pnl=total_realized_pnl,
+                           total_unrealized_pnl=total_unrealized_pnl)
 
 
 @app.route('/dashboard')
