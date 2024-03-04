@@ -259,23 +259,27 @@ def position_details_page():
         stock = trade['Stock']
         quantity = trade['quantity']
         avg_price = trade['AVG_price']
+        trade_type = trade['type']
 
         # Calculate PNL
-        if trade['type'] == 'buy':
+        if trade_type == 'buy':
             pnl = (last_traded_prices[stock] - avg_price) * quantity
         else:  # Assuming the type can be 'sell' or 'buy' only
             pnl = (avg_price - last_traded_prices[stock]) * quantity
 
         # Calculate M2M
+        m2m_value = (last_traded_prices[stock] - avg_price) * quantity
+
+        # Update stock-specific values
         m2m[stock] = {
             'quantity': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['quantity'] + quantity,
-            'm2m': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['m2m'] + (last_traded_prices[stock] - avg_price) * quantity,
+            'm2m': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['m2m'] + m2m_value,
             'pnl': net_pnl.get(stock, 0) + pnl
         }
 
         # Update total values
         m2m['total']['quantity'] += quantity
-        m2m['total']['m2m'] += (last_traded_prices[stock] - avg_price) * quantity
+        m2m['total']['m2m'] += m2m_value
         m2m['total']['pnl'] += pnl
 
     return render_template('position_details.html', m2m=m2m)
