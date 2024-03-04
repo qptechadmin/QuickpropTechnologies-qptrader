@@ -247,7 +247,7 @@ def place_sell_order():
 @app.route('/position_details')
 @login_required
 def position_details_page():
-    trades = mysqlconnection.get_executed_orders(session['username'])
+    data = mysqlconnection.get_executed_orders(session['username'])
     # Assuming the last traded price
     last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('30.00')}
 
