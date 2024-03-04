@@ -16,6 +16,10 @@ import time
 import requests
 import os
 import mysqlconnection
+import logging
+
+# Configure logging
+logging.basicConfig(filename='trading.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class User: 
     def __init__(self, id, username, password):
@@ -234,7 +238,7 @@ def place_sell_order():
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( session['username'], stock_symbol, quantity, 0, 'buy', 0, "order Failed"),
+        ( session['username'], stock_symbol, quantity, 0, 'sell', 0, "order Failed"),
         ]
         mysqlconnection.updatedb(data)
         return render_template('trade.html', error_message=result)
@@ -244,10 +248,13 @@ def place_sell_order():
 def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
     last_traded_price = 10
+    # Log some summary information
+    logging.info("trades table: %s", trades)
     # Calculate net PNL and M2M for each stock
     net_pnl = {}
     m2m = {}
     for trade in trades:
+        logging.info("M2M: %s", trade)
         stock = trade[2]
         quantity = trade[3]
         avg_price = trade[4]
