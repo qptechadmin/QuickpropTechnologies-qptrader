@@ -242,7 +242,7 @@ def place_sell_order():
 @app.route('/position_details')
 @login_required
 def position_details_page():
-    position_details = get_executed_orders(session['username'])
+    position_details = mysqlconnection.get_executed_orders(session['username'])
 
     return render_template('position_details.html', positions=position_details)
 
