@@ -249,24 +249,24 @@ def place_sell_order():
 def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
     # Assuming the last traded price
-    last_traded_price = Decimal('10.50')
+    last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('30.00')}
 
     net_pnl = {}
     m2m = {}
 
-    for trade in trades:
+    for trade in data:
         stock = trade['Stock']
         quantity = trade['quantity']
         avg_price = trade['AVG_price']
 
         # Calculate PNL
         if trade['type'] == 'buy':
-            pnl = (last_traded_price - avg_price) * quantity
+            pnl = (last_traded_prices[stock] - avg_price) * quantity
         else:  # Assuming the type can be 'sell' or 'buy' only
-            pnl = (avg_price - last_traded_price) * quantity
+            pnl = (avg_price - last_traded_prices[stock]) * quantity
 
         # Calculate M2M
-        m2m[stock] = m2m.get(stock, 0) + (last_traded_price - avg_price) * quantity
+        m2m[stock] = m2m.get(stock, 0) + (last_traded_prices[stock] - avg_price) * quantity
 
         # Update net PNL
         net_pnl[stock] = net_pnl.get(stock, 0) + pnl
