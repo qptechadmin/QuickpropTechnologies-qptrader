@@ -214,6 +214,7 @@ def place_sell_order():
 
     stock_symbol = request.form['stockSymbolSell']
     quantity = int(request.form['quantity'])
+    quantity = quantity * -1
 
     # Define order details for a market sell order
     order_details = {
@@ -239,7 +240,7 @@ def place_sell_order():
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( session['username'], stock_symbol * -1, -10, 'sell', -100, "11100"),
+        ( session['username'], stock_symbol,  quantity, -10, 'sell', -100, "11100"),
         ]
         mysqlconnection.updatedb(data)
         return render_template('trade.html', error_message=result)
