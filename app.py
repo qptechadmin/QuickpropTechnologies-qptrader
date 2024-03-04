@@ -256,24 +256,24 @@ def position_details_page():
     pnl_m2m = defaultdict(lambda: {'pnl': Decimal('0.00'), 'm2m': Decimal('0.00')})
 
     for trade in trades:
-    stock = trade['stock']
-    quantity = trade['quantity']
-    avg_price = trade['avg_price']
-    trade_type = trade['type']
-    last_price = last_traded_prices[stock]
+        stock = trade['stock']
+        quantity = trade['quantity']
+        avg_price = trade['avg_price']
+        trade_type = trade['type']
+        last_price = last_traded_prices[stock]
 
-    # Calculate PNL
-    if trade_type == 'buy':
-        pnl = (last_price - avg_price) * quantity
-    else:  # Assuming the type can be 'sell' or 'buy' only
-        pnl = (avg_price - last_price) * quantity
+        # Calculate PNL
+        if trade_type == 'buy':
+            pnl = (last_price - avg_price) * quantity
+        else:  # Assuming the type can be 'sell' or 'buy' only
+            pnl = (avg_price - last_price) * quantity
 
-    # Calculate M2M
-    m2m = (last_price - avg_price) * quantity
+        # Calculate M2M
+        m2m = (last_price - avg_price) * quantity
 
-    # Update total PNL and M2M for the stock
-    pnl_m2m[stock]['pnl'] += pnl
-    pnl_m2m[stock]['m2m'] += m2m
+        # Update total PNL and M2M for the stock
+        pnl_m2m[stock]['pnl'] += pnl
+        pnl_m2m[stock]['m2m'] += m2m
 
     return render_template('position_details.html', pnl_m2m=pnl_m2m)
 
