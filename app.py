@@ -252,8 +252,6 @@ def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
-
-def position_details_page():
     realized_pnl = 0
     unrealized_pnl = 0
     pnl_m2m = {}
