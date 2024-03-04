@@ -253,10 +253,11 @@ def position_details_page():
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
 
+def position_details_page():
+    realized_pnl = 0
+    unrealized_pnl = 0
     pnl_m2m = {}
     available_quantity = {}
-    total_pnl = 0
-    total_m2m = 0
 
     for trade in trades:
         stock = trade['Stock']
@@ -266,30 +267,29 @@ def position_details_page():
 
         # Initialize the dictionary for each stock if not present
         if stock not in pnl_m2m:
-            pnl_m2m[stock] = {'pnl': 0, 'm2m': 0, 'available_quantity': 0, 'avg_price': 0}
+            pnl_m2m[stock] = {'realized_pnl': 0, 'unrealized_pnl': 0, 'm2m': 0, 'avg_price': 0, 'last_traded_price': 0}
 
-        # Calculate PNL and M2M
-        if trade_type == 'sell':
-            pnl = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
-            m2m = pnl  # PNL is equal to M2M for a completed trade
-        else:  # Assuming the type can be 'buy' only
-            pnl = 0  # Buying doesn't realize profit
-            m2m = 0
+        # Calculate realized PNL for completed trades
+        if trade_type == 'sell' or trade_type == 'sell_short':
+            realized_pnl += (avg_price - pnl_m2m[stock]['avg_price']) * quantity
+
+        # Calculate unrealized PNL for open positions
+        if quantity > 0:  # Long position
+            unrealized_pnl += (last_traded_prices[stock] - avg_price) * quantity
+        elif quantity < 0:  # Short position
+            unrealized_pnl += (avg_price - last_traded_prices[stock]) * quantity
 
         # Update available quantity
         available_quantity[stock] = available_quantity.get(stock, 0) + quantity
 
-        # Update total PNL and M2M
-        total_pnl += pnl
-        total_m2m += m2m
-
-        # Update PNL, M2M, and avg_price
-        pnl_m2m[stock]['pnl'] += pnl
-        pnl_m2m[stock]['m2m'] += m2m
+        # Update PNL, M2M, avg_price, and last traded price
+        pnl_m2m[stock]['realized_pnl'] = realized_pnl
+        pnl_m2m[stock]['unrealized_pnl'] = unrealized_pnl
+        pnl_m2m[stock]['m2m'] = realized_pnl + unrealized_pnl
         pnl_m2m[stock]['avg_price'] = avg_price
         pnl_m2m[stock]['last_traded_price'] = last_traded_prices.get(stock, 0)
 
-    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity, total_pnl=total_pnl, total_m2m=total_m2m)
+    return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity)
 
 
 @app.route('/dashboard')

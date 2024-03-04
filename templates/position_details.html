@@ -7,6 +7,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
         }
         h1 {
             text-align: center;
@@ -15,6 +18,9 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
         }
         th, td {
             padding: 10px;
@@ -30,6 +36,12 @@
         .total-row {
             font-weight: bold;
         }
+        .pnl-positive {
+            color: green;
+        }
+        .pnl-negative {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -39,24 +51,27 @@
             <th>Stock</th>
             <th>Available Quantity</th>
             <th>Last Traded Price</th> 
-            <th>PNL</th>
-            <th>M2M</th>
+            <th>Realized PNL</th>
+            <th>Unrealized PNL</th>
+            <th>Total PNL</th>
         </tr>
         {% for stock, data in pnl_m2m.items() %}
         <tr>
             <td>{{ stock }}</td>
             <td>{{ available_quantity[stock] }}</td>
             <td>${{ data['last_traded_price'] }}</td> 
-            <td>${{ data['pnl'] }}</td>
-            <td>${{ data['m2m'] }}</td>
+            <td class="{% if data['realized_pnl'] >= 0 %} pnl-positive {% else %} pnl-negative {% endif %}">${{ data['realized_pnl'] }}</td>
+            <td class="{% if data['unrealized_pnl'] >= 0 %} pnl-positive {% else %} pnl-negative {% endif %}">${{ data['unrealized_pnl'] }}</td>
+            <td class="{% if data['m2m'] >= 0 %} pnl-positive {% else %} pnl-negative {% endif %}">${{ data['m2m'] }}</td>
         </tr>
         {% endfor %}
         <tr class="total-row">
             <td>Total</td>
             <td></td>
             <td></td>
-            <td>${{ total_pnl }}</td>
-            <td>${{ total_m2m }}</td>
+            <td></td>
+            <td></td>
+            <td class="{% if total_pnl >= 0 %} pnl-positive {% else %} pnl-negative {% endif %}">${{ total_pnl }}</td>
         </tr>
     </table>
 </body>
