@@ -248,11 +248,11 @@ def place_sell_order():
 @login_required
 def position_details_page():
     data = mysqlconnection.get_executed_orders(session['username'])
-    # Assuming the last traded price
+    # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('10.50'), 'WIPRO': Decimal('11.00'), 'TCS': Decimal('12.00'), 'INFY': Decimal('13.00')}
 
     net_pnl = {}
-    m2m = {}
+    m2m = {'total': {'quantity': 0, 'm2m': 0, 'pnl': 0}}  # Initialize total values
 
     for trade in data:
         stock = trade['Stock']
@@ -266,12 +266,18 @@ def position_details_page():
             pnl = (avg_price - last_traded_prices[stock]) * quantity
 
         # Calculate M2M
-        m2m[stock] = m2m.get(stock, 0) + (last_traded_prices[stock] - avg_price) * quantity
+        m2m[stock] = {
+            'quantity': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['quantity'] + quantity,
+            'm2m': m2m.get(stock, {'quantity': 0, 'm2m': 0, 'pnl': 0})['m2m'] + (last_traded_prices[stock] - avg_price) * quantity,
+            'pnl': net_pnl.get(stock, 0) + pnl
+        }
 
-        # Update net PNL
-        net_pnl[stock] = net_pnl.get(stock, 0) + pnl
+        # Update total values
+        m2m['total']['quantity'] += quantity
+        m2m['total']['m2m'] += (last_traded_prices[stock] - avg_price) * quantity
+        m2m['total']['pnl'] += pnl
 
-    return render_template('position_details.html', m2m=m2m, net_pnl=net_pnl)
+    return render_template('position_details.html', m2m=m2m)
 
 @app.route('/dashboard')
 @login_required

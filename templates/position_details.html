@@ -3,50 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M2M and PNL</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 50%;
-            margin: auto;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Position Details</title>
 </head>
 <body>
     <h1>Mark-to-Market (M2M)</h1>
     <table>
         <tr>
             <th>Stock</th>
+            <th>Quantity</th>
             <th>M2M</th>
-        </tr>
-        {% for stock, value in m2m.items() %}
-            <tr>
-                <td>{{ stock }}</td>
-                <td>{{ value }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
-    <h1> Profit/Loss (PNL) Realized</h1>
-    <table>
-        <tr>
-            <th>Stock</th>
             <th>PNL</th>
         </tr>
-        {% for stock, value in net_pnl.items() %}
+        {% for stock, info in m2m.items() %}
             <tr>
                 <td>{{ stock }}</td>
-                <td>{{ value }}</td>
+                <td>{{ info['quantity'] }}</td>
+                <td>{{ info['m2m'] }}</td>
+                <td>{{ info['pnl'] }}</td>
             </tr>
         {% endfor %}
+        <tr>
+            <td>Total</td>
+            <td>{{ m2m['total']['quantity'] }}</td>
+            <td>{{ m2m['total']['m2m'] }}</td>
+            <td>{{ m2m['total']['pnl'] }}</td>
+        </tr>
     </table>
 </body>
 </html>
