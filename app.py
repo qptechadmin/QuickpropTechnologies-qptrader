@@ -247,24 +247,30 @@ def place_sell_order():
 @login_required
 def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
-    last_traded_price = 10
-    # Log some summary information
-    logging.info("trades table: %s", trades)
-    # Calculate net PNL and M2M for each stock
+    # Assuming the last traded price
+    last_traded_price = Decimal('10.50')
+
     net_pnl = {}
     m2m = {}
-    for trade in trades:
-        logging.info("M2M: %s", trade)
-        stock = trade[2]
-        quantity = trade[3]
-        avg_price = trade[4]
-        pnl = (avg_price - last_traded_price) * quantity
-        if trade[5] == 'sell':
-            pnl *= -1  # Reverse PNL sign for sell trades
-        net_pnl[stock] = net_pnl.get(stock, 0) + pnl
-        m2m[stock] = m2m.get(stock, 0) + (avg_price - last_traded_price) * quantity
 
-    return render_template('position_details.html', trades=trades, net_pnl=net_pnl, m2m=m2m)
+    for trade in data:
+        stock = trade['Stock']
+        quantity = trade['quantity']
+        avg_price = trade['AVG_price']
+
+        # Calculate PNL
+        if trade['type'] == 'buy':
+            pnl = (last_traded_price - avg_price) * quantity
+        else:  # Assuming the type can be 'sell' or 'buy' only
+            pnl = (avg_price - last_traded_price) * quantity
+
+        # Calculate M2M
+        m2m[stock] = m2m.get(stock, 0) + (last_traded_price - avg_price) * quantity
+
+        # Update net PNL
+        net_pnl[stock] = net_pnl.get(stock, 0) + pnl
+
+    return render_template('index.html', m2m=m2m, net_pnl=net_pnl)
 
 @app.route('/dashboard')
 @login_required

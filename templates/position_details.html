@@ -3,38 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Last Traded Price and Profit/Loss</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>M2M and PNL</title>
 </head>
 <body>
-    <h2>Last Traded Price and Profit/Loss</h2>
-    <p>Last Traded Price for Stock {{ stock_symbol }}: {{ last_traded_price }}</p>
-    <table>
-        <tr>
-            <th>Stock</th>
-            <th>Net PNL</th>
-            <th>M2M</th>
-        </tr>
-        {% for stock, pnl in net_pnl.items() %}
-        <tr>
-            <td>{{ stock }}</td>
-            <td>{{ pnl }}</td>
-            <td>{{ m2m[stock] }}</td>
-        </tr>
+    <h1>Mark-to-Market (M2M)</h1>
+    <ul>
+        {% for stock, value in m2m.items() %}
+            <li>{{ stock }}: {{ value }}</li>
         {% endfor %}
-    </table>
+    </ul>
+
+    <h1>Profit/Loss (PNL)</h1>
+    <ul>
+        {% for stock, value in net_pnl.items() %}
+            <li>{{ stock }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
