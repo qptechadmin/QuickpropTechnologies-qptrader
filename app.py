@@ -257,9 +257,9 @@ def position_details_page():
     pnl_m2m = defaultdict(lambda: {'pnl': Decimal('0.00'), 'm2m': Decimal('0.00')})
 
     for trade in trades:
-        stock = trade['stock']
+        stock = trade['Stock']
         quantity = trade['quantity']
-        avg_price = trade['avg_price']
+        avg_price = trade['AVG_price']
         trade_type = trade['type']
         last_price = last_traded_prices[stock]
 
