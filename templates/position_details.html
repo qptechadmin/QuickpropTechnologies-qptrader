@@ -2,9 +2,10 @@
 <html>
 <head>
     <title>Realized and Unrealized PNL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         table {
-            width: 80%;
+            width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
@@ -28,34 +29,36 @@
     </style>
 </head>
 <body>
-    <table id="pnl-table">
-        <tr>
-            <th>Stock</th>
-            <th>Realized PNL</th>
-            <th>Unrealized PNL</th>
-            <th>Available Quantity</th>
-            <th>Last Traded Price</th>
-            <th>Total Profit/Loss</th>
-        </tr>
-        {% for stock, pnl in realized_pnl.items() %}
-        <tr>
-            <td>{{ stock }}</td>
-            <td class="{% if pnl >= 0 %}positive{% else %}negative{% endif %}">{{ pnl }}</td>
-            <td class="{% if unrealized_pnl[stock] >= 0 %}positive{% else %}negative{% endif %}">{{ unrealized_pnl[stock] }}</td>
-            <td>{{ available_quantity[stock] }}</td>
-            <td>{{ last_traded_prices[stock] }}</td>
-            <td class="{% if (pnl + unrealized_pnl[stock]) >= 0 %}positive{% else %}negative{% endif %}">{{ pnl + unrealized_pnl[stock] }}</td>
-        </tr>
-        {% endfor %}
-        <tr class="total">
-            <td>Total</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
-        </tr>
-    </table>
+    <div style="overflow-x:auto;">
+        <table id="pnl-table">
+            <tr>
+                <th>Stock</th>
+                <th>Realized PNL</th>
+                <th>Unrealized PNL</th>
+                <th>Available Quantity</th>
+                <th>Last Traded Price</th>
+                <th>Total Profit/Loss</th>
+            </tr>
+            {% for stock, pnl in realized_pnl.items() %}
+            <tr>
+                <td>{{ stock }}</td>
+                <td class="{% if pnl >= 0 %}positive{% else %}negative{% endif %}">{{ pnl }}</td>
+                <td class="{% if unrealized_pnl[stock] >= 0 %}positive{% else %}negative{% endif %}">{{ unrealized_pnl[stock] }}</td>
+                <td>{{ available_quantity[stock] }}</td>
+                <td>{{ last_traded_prices[stock] }}</td>
+                <td class="{% if (pnl + unrealized_pnl[stock]) >= 0 %}positive{% else %}negative{% endif %}">{{ pnl + unrealized_pnl[stock] }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total">
+                <td>Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
+            </tr>
+        </table>
+    </div>
     <script>
         function updatePNL() {
             // Make an AJAX request to fetch updated data from the server
