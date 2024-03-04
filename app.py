@@ -239,7 +239,7 @@ def place_sell_order():
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( session['username'], Decimal(stock_symbol) * Decimal('-1'), -10, 'sell', -100, "11100"),
+        ( session['username'], Decimal(str(stock_symbol)) * Decimal('-1'), -10, 'sell', -100, "11100"),
         ]
         mysqlconnection.updatedb(data)
         return render_template('trade.html', error_message=result)
