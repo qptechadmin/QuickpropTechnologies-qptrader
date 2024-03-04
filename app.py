@@ -271,7 +271,7 @@ def position_details_page():
         # Update net PNL
         net_pnl[stock] = net_pnl.get(stock, 0) + pnl
 
-    return render_template('index.html', m2m=m2m, net_pnl=net_pnl)
+    return render_template('position_details.html', m2m=m2m, net_pnl=net_pnl)
 
 @app.route('/dashboard')
 @login_required
