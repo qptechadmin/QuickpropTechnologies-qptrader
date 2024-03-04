@@ -268,12 +268,12 @@ def position_details_page():
 
         # Calculate PNL
         if trade_type == 'sell':
-            pnl = (avg_price - pnl_m2m[stock]['AVG_price']) * quantity
+            pnl = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
         else:  # Assuming the type can be 'buy' only
-            pnl = (pnl_m2m[stock]['AVG_price'] - avg_price) * quantity
+            pnl = (pnl_m2m[stock]['avg_price'] - avg_price) * quantity
 
         # Update M2M
-        m2m = (avg_price - pnl_m2m[stock]['AVG_price']) * quantity
+        m2m = (avg_price - pnl_m2m[stock]['avg_price']) * quantity
 
         # Update available quantity
         available_quantity[stock] = available_quantity.get(stock, 0) + quantity
@@ -281,7 +281,7 @@ def position_details_page():
         # Update PNL, M2M, and avg_price
         pnl_m2m[stock]['pnl'] += pnl
         pnl_m2m[stock]['m2m'] += m2m
-        pnl_m2m[stock]['AVG_price'] = avg_price
+        pnl_m2m[stock]['avg_price'] = avg_price
 
     return render_template('position_details.html', pnl_m2m=pnl_m2m, available_quantity=available_quantity)
 
