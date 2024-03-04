@@ -255,6 +255,8 @@ def position_details_page():
 
     pnl_m2m = {}
     available_quantity = {}
+    total_pnl = 0
+    total_m2m = 0
 
     for trade in trades:
         stock = trade['Stock']
