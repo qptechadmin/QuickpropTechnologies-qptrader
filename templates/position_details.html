@@ -4,6 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Position Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .total-row td {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <h1>Mark-to-Market (M2M)</h1>
@@ -22,7 +46,7 @@
                 <td>{{ info['pnl'] }}</td>
             </tr>
         {% endfor %}
-        <tr>
+        <tr class="total-row">
             <td>Total</td>
             <td>{{ m2m['total']['quantity'] }}</td>
             <td>{{ m2m['total']['m2m'] }}</td>
