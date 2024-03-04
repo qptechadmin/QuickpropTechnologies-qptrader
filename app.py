@@ -257,7 +257,7 @@ def position_details_page():
         net_pnl[stock] = net_pnl.get(stock, 0) + pnl
         m2m[stock] = m2m.get(stock, 0) + (avg_price - last_traded_price) * quantity
 
-    return render_template('position_details.html', trades=trades, net_pnl=net_pnl, m2m=m2m))
+    return render_template('position_details.html', trades=trades, net_pnl=net_pnl, m2m=m2m)
 
 @app.route('/dashboard')
 @login_required
