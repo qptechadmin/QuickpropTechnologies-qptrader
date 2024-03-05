@@ -229,11 +229,7 @@ def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
     last_traded_price = get_last_traded_price(stock_symbol)
     # Assuming the last traded prices for each stock
-    last_traded_prices = {'SUNPHARMA': Decimal('0.00'), 'WIPRO': Decimal('0.00'), 'TCS': Decimal('0.00'), 'INFY': Decimal('0.00')}
-# Iterate through the data and fetch the last traded price for each unique stock symbol
-    for stock_symbol in last_traded_prices:
-        if last_traded_prices[stock_symbol] == Decimal('0.00'):
-            last_traded_prices[stock_symbol] = get_last_traded_price(stock_symbol)
+    last_traded_prices = {'SUNPHARMA': Decimal("{:.2f}".format(get_last_traded_price("SUNPHARMA"))), 'WIPRO': Decimal("{:.2f}".format(get_last_traded_price("WIPRO"))), 'TCS': Decimal("{:.2f}".format(get_last_traded_price("TCS"))), 'INFY': Decimal("{:.2f}".format(get_last_traded_price("INFY")))}
     unrealized_pnl = {}
     pnl_m2m = {}
     available_quantity = {}
@@ -289,3 +285,4 @@ def run_app(port):
 
 if __name__ == "__main__":
     run_app(9001)
+
