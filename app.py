@@ -227,7 +227,6 @@ def place_sell_order():
 @login_required
 def position_details_page():
     trades = mysqlconnection.get_executed_orders(session['username'])
-    last_traded_price = get_last_traded_price(stock_symbol)
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('0.00'), 'WIPRO': Decimal('0.00'), 'TCS': Decimal('0.00'), 'INFY': Decimal('0.00')}
     # Iterate through the data and fetch the last traded price for each unique stock symbol
@@ -288,5 +287,5 @@ def run_app(port):
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
 
 if __name__ == "__main__":
-    run_app(9001)
+    run_app(9003)
 
