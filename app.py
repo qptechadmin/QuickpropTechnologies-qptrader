@@ -235,7 +235,7 @@ def position_details_page():
     instrument_token = 'NSE:INFY'  # Example instrument token for Infosys
     quote = kite.quote(instrument_token)
     for stock_symbol in last_traded_prices:
-        if last_traded_prices[stock_symbol] == Decimal('0.00')
+        if last_traded_prices[stock_symbol] == Decimal('0.00'):
             #last_traded_prices[stock_symbol] = Decimal(quote)
             last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
     unrealized_pnl = {}
