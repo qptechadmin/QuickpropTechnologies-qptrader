@@ -230,9 +230,12 @@ def position_details_page():
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('0.00'), 'WIPRO': Decimal('0.00'), 'TCS': Decimal('0.00'), 'INFY': Decimal('0.00')}
     # Iterate through the data and fetch the last traded price for each unique stock symbol
+    instrument_token = 'NSE:INFY'  # Example instrument token for Infosys
+    quote = kite.quote(instrument_token)
     for stock_symbol in last_traded_prices:
         if last_traded_prices[stock_symbol] == Decimal('0.00'):
-            last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
+            last_traded_prices[stock_symbol] = Decimal(quote)
+            #last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
     unrealized_pnl = {}
     realized_pnl = {}
     pnl_m2m = {}
