@@ -232,7 +232,7 @@ def position_details_page():
     # Iterate through the data and fetch the last traded price for each unique stock symbol
     for stock_symbol in last_traded_prices:
         if last_traded_prices[stock_symbol] == Decimal('0.00'):
-            last_traded_prices[stock_symbol] = Decimal(get_last_traded_price(stock_symbol))
+            last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
     unrealized_pnl = {}
     pnl_m2m = {}
     available_quantity = {}
