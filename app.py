@@ -234,6 +234,7 @@ def position_details_page():
         if last_traded_prices[stock_symbol] == Decimal('0.00'):
             last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
     unrealized_pnl = {}
+    realized_pnl = {}
     pnl_m2m = {}
     available_quantity = {}
 
