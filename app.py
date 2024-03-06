@@ -37,7 +37,7 @@ app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 
 # Replace with your actual API key and access token
 api_key = "oz8srgm6p4nfg2ee"
-access_token = "vtWt6YwpWeIfV2xBBi1kwKGyt4H0zXQO7"
+access_token = "tWt6YwpWeIfV2xBBi1kwKGyt4H0zXQO7"
 BASE_URL = 'https://kite.zerodha.com/'
 position_details = []  # Replace with your actual symbols      
 
@@ -235,9 +235,9 @@ def position_details_page():
     instrument_token = 'NSE:INFY'  # Example instrument token for Infosys
     quote = kite.quote(instrument_token)
     for stock_symbol in last_traded_prices:
-        if last_traded_prices[stock_symbol] == Decimal('0.00'):
-            last_traded_prices[stock_symbol] = Decimal(quote)
-            #last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
+        if last_traded_prices[stock_symbol] == Decimal('0.00')
+            #last_traded_prices[stock_symbol] = Decimal(quote)
+            last_traded_prices[stock_symbol] = Decimal(get_last_traded_price("SUNPHARMA"))
     unrealized_pnl = {}
     realized_pnl = {}
     pnl_m2m = {}
