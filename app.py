@@ -193,8 +193,6 @@ def place_sell_order():
 
     stock_symbol = request.form['stockSymbolSell']
     quantity = int(request.form['quantity'])
-    quantity = quantity * -1
-
     # Define order details for a market sell order
     order_details = {
         "tradingsymbol": stock_symbol,
@@ -206,6 +204,7 @@ def place_sell_order():
     }
 
     try:
+        quantity = quantity * -1
         order_id = kite.place_order(variety=kite.VARIETY_REGULAR, **order_details)
         trade_details = kite.order_trades(order_id)  # Fetch trade details
         average_price = trade_details[0]['average_price']
