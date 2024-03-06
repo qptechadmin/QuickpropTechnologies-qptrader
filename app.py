@@ -113,7 +113,7 @@ def get_last_traded_price(stock_symbol):
         last_traded_price = data["data"]["NSE:" + stock_symbol]["last_price"]
         return last_traded_price
     else:
-        return None
+        return 100
 
     # Fetch the average price from the position details
     position = next((p for p in position_details if p['symbol'] == stock_symbol), None)
