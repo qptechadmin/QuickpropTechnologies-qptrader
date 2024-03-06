@@ -161,7 +161,7 @@ def place_buy_order():
     order_details = {
         "tradingsymbol": stock_symbol,
         "exchange": "NSE",
-        "transaction_type": "BUY",
+        "transaction_type": "SELL",
         "quantity": quantity,
         "order_type": "MARKET",
         "product": "MIS"
@@ -197,7 +197,7 @@ def place_sell_order():
     order_details = {
         "tradingsymbol": stock_symbol,
         "exchange": "NSE",
-        "transaction_type": "SELL",
+        "transaction_type": "BUY",
         "quantity": quantity,
         "order_type": "MARKET",
         "product": "MIS"
