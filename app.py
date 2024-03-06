@@ -217,6 +217,7 @@ def place_sell_order():
         return render_template('trade.html', order_confirmation=f"Sell order placed successfully. Order ID: {order_id}")
     except Exception as e:
         result = f"Error placing sell order: {e}"
+        logging.info(e)
         data = [
         ( session['username'], stock_symbol,  quantity, 0, 'sell', 0, "order Failed"),
         ]
