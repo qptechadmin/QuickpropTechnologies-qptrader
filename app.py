@@ -218,7 +218,7 @@ def place_sell_order():
     except Exception as e:
         result = f"Error placing sell order: {e}"
         data = [
-        ( session['username'], stock_symbol,  quantity, 10, 'sell', 0, "order Failed"),
+        ( session['username'], stock_symbol,  quantity, 0, 'sell', 0, "order Failed"),
         ]
         mysqlconnection.updatedb(data)
         return render_template('trade.html', error_message=result)
