@@ -36,8 +36,8 @@ app = Flask(__name__)
 app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 
 # Replace with your actual API key and access token
-api_key = "nou76gvyfsugbu6q"
-access_token = "vUNA5Rax5fZf8patweFpahXnJKGzUo3x"
+api_key = "oz8srgm6p4nfg2ee"
+access_token = "vtWt6YwpWeIfV2xBBi1kwKGyt4H0zXQO7"
 BASE_URL = 'https://kite.zerodha.com/'
 position_details = []  # Replace with your actual symbols      
 
@@ -233,7 +233,7 @@ def position_details_page():
     for stock_symbol in last_traded_prices:
         if last_traded_prices[stock_symbol] == Decimal('0.00'):
             last_traded_prices[stock_symbol] = Decimal(get_last_traded_price(stock_symbol))
-    unrealized_pnl = {}
+    unrealized_pnl = {}:q
     pnl_m2m = {}
     available_quantity = {}
 
