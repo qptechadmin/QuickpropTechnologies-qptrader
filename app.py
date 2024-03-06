@@ -226,6 +226,8 @@ def place_sell_order():
 @app.route('/position_details')
 @login_required
 def position_details_page():
+    kite = KiteConnect(api_key=api_key)
+    kite.set_access_token(access_token)
     trades = mysqlconnection.get_executed_orders(session['username'])
     # Assuming the last traded prices for each stock
     last_traded_prices = {'SUNPHARMA': Decimal('0.00'), 'WIPRO': Decimal('0.00'), 'TCS': Decimal('0.00'), 'INFY': Decimal('0.00')}
