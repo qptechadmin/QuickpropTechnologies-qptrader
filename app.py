@@ -37,7 +37,7 @@ app.secret_key = 'fnyhwrbc1fyfulg3opt6pkj25nagxphi'
 
 # Replace with your actual API key and access token
 api_key = "oz8srgm6p4nfg2ee"
-access_token = "tWt6YwpWeIfV2xBBi1kwKGyt4H0zXQO7"
+access_token = os.getenv("ACCESS_TOKEN")
 BASE_URL = 'https://kite.zerodha.com/'
 position_details = []  # Replace with your actual symbols      
 
