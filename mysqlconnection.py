@@ -56,7 +56,7 @@ def get_executed_orders(user):
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
     # Check if the user is an admin
-    if user == 'qptrader'
+    if user == 'qptrader':
         # If user is admin, fetch all details
         cursor.execute("SELECT * FROM trades")
     else:
