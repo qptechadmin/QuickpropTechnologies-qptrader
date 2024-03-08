@@ -44,8 +44,12 @@ def get_user_credentials(username):
 def get_orders(user):
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
-    # Execute the query to fetch data from the trades table
-    mycursor.execute("SELECT * FROM trades WHERE user = %s", (user,))
+    if user == 'qptrader':
+        # If user is admin, fetch all details
+        mycursor.execute("SELECT * FROM trades")
+    else:
+        # Execute the query to fetch data from the trades table
+        mycursor.execute("SELECT * FROM trades WHERE user = %s", (user,))
     # Fetch all rows of the result
     data = mycursor.fetchall()
     # Close the cursor
