@@ -55,8 +55,13 @@ def get_orders(user):
 def get_executed_orders(user):
     # Create a cursor object to execute queries
     mycursor = mydb.cursor(dictionary=True)
-    # Execute the query to fetch data from the trades table
-    mycursor.execute("SELECT * FROM trades WHERE user = %s AND status != 'order Failed'", (user,))
+    # Check if the user is an admin
+    if user == 'qptrader'
+        # If user is admin, fetch all details
+        cursor.execute("SELECT * FROM trades")
+    else:
+        # Execute the query to fetch data from the trades table
+        mycursor.execute("SELECT * FROM trades WHERE user = %s AND status != 'order Failed'", (user,))
     # Fetch all rows of the result
     data = mycursor.fetchall()
     # Close the cursor
