@@ -263,7 +263,7 @@ def position_details_page():
         # Update available quantity
         available_quantity[stock] += quantity
 
-    total_exchange_charges = total_value * 0.00032
+    total_exchange_charges = total_value * Decimal('0.00032')
     total_realized_pnl = sum(realized_pnl.values())
     total_unrealized_pnl = sum(unrealized_pnl.values())
     total_pnl = total_realized_pnl + total_unrealized_pnl
