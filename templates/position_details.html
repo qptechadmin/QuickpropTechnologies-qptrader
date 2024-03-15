@@ -59,8 +59,8 @@
             </tr>
             <tr class="tot">
                 <td></td>
-                <td>No of trades</td>
-                <td></td>
+                <td>No of trades X 20RS</td>
+                <td>20rs/ order * No of trades</td>
                 <td>Exchange charges</td>
                 <td></td>
                 <td></td>
@@ -68,7 +68,7 @@
             <tr class="totals">
                 <td>Total</td>
                 <td>{{ no_of_trades }} </td>
-                <td></td>
+                <td>{{ brokerage }}</td>
                 <td>{{ total_exchange_charges }}</td>
                 <td></td>
                 <td class="{% if total_value >= 0 %}positive{% else %}negative{% endif %}">{{ total_value }}</td>
