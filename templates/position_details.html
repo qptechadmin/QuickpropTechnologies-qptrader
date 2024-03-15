@@ -50,11 +50,11 @@
             </tr>
             {% endfor %}
             <tr class="total">
+                <td>Brokerage</td>
+                <td>20 RS / order</td>
+                <td>Exchange charges</td>
+                <td>{{ total_exchange_charges }}</td>
                 <td>Total</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
             </tr>
         </table>
@@ -74,7 +74,7 @@
         }
 
         // Update the PNL data every 10 seconds
-        setInterval(updatePNL, 10000); // 10000 milliseconds = 10 seconds
+        setInterval(updatePNL, 5000); // 10000 milliseconds = 10 seconds
     </script>
 </body>
 </html>

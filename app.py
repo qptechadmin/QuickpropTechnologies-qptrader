@@ -242,14 +242,14 @@ def position_details_page():
     realized_pnl = {}
     pnl_m2m = {}
     available_quantity = {}
-
+    total_value = 0
     for trade in trades:
         stock = trade['Stock']
         quantity = trade['quantity']
         avg_price = trade['AVG_price']
         trade_type = trade['type']
+        total_value = total_value + (avg_price * abs(quantity))
         last_traded_price = last_traded_prices[stock]
-
         if stock not in realized_pnl:
             realized_pnl[stock] = 0
             unrealized_pnl[stock] = 0
@@ -263,7 +263,7 @@ def position_details_page():
         # Update available quantity
         available_quantity[stock] += quantity
 
-
+    total_exchange_charges = total_value * 0.00032
     total_realized_pnl = sum(realized_pnl.values())
     total_unrealized_pnl = sum(unrealized_pnl.values())
     total_pnl = total_realized_pnl + total_unrealized_pnl
@@ -271,7 +271,7 @@ def position_details_page():
 
     return render_template('position_details.html', realized_pnl=realized_pnl, unrealized_pnl=unrealized_pnl,
                            available_quantity=available_quantity, total_realized_pnl=total_realized_pnl,
-                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_pnl, last_traded_prices=last_traded_prices)
+                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_pnl, last_traded_prices=last_traded_prices, total_exchange_charges=total_exchange_charges)
 
 
 @app.route('/dashboard')
