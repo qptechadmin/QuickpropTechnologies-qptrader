@@ -274,7 +274,7 @@ def position_details_page():
 
     return render_template('position_details.html', realized_pnl=realized_pnl, unrealized_pnl=unrealized_pnl,
                            available_quantity=available_quantity, total_realized_pnl=total_realized_pnl,
-                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_pnl, last_traded_prices=last_traded_prices, total_exchange_charges=total_exchange_charges, no_of_trades=no_of_trades, total_value=total_value)
+                           total_unrealized_pnl=total_unrealized_pnl, total_pnl=total_pnl, last_traded_prices=last_traded_prices, total_exchange_charges=total_exchange_charges.quantize(Decimal('0.01')), no_of_trades=no_of_trades, total_value=total_value.quantize(Decimal('0.01')))
 
 
 @app.route('/dashboard')

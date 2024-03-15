@@ -57,12 +57,20 @@
                 <td></td>
                 <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
             </tr>
-            <tr class="totals">
+            <tr class="tot">
+                <td></td>
                 <td>No of trades</td>
-                <td>{{ no_of_trades }} * 20/order</td>
+                <td></td>
                 <td>Exchange charges</td>
-                <td>{{ total_exchange_charges }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="totals">
                 <td>Total</td>
+                <td>{{ no_of_trades }} </td>
+                <td></td>
+                <td>{{ total_exchange_charges }}</td>
+                <td></td>
                 <td class="{% if total_value >= 0 %}positive{% else %}negative{% endif %}">{{ total_value }}</td>
             </tr>
         </table>
