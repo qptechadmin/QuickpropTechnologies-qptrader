@@ -269,7 +269,7 @@ def position_details_page():
     total_realized_pnl = sum(realized_pnl.values())
     total_unrealized_pnl = sum(unrealized_pnl.values())
     total_pnl = total_realized_pnl + total_unrealized_pnl
-    total_value = total_pnl - total_exchange_charges
+    total_value = total_pnl - total_exchange_charges - (20 * Decimal(no_of_trades))
 
 
     return render_template('position_details.html', realized_pnl=realized_pnl, unrealized_pnl=unrealized_pnl,
