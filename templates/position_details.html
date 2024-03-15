@@ -50,12 +50,20 @@
             </tr>
             {% endfor %}
             <tr class="total">
-                <td>Brokerage</td>
-                <td>20 RS / order</td>
+                <td>Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
+            </tr>
+            <tr class="totals">
+                <td>No of trades</td>
+                <td>{{ no_of_trades }} * 20/order</td>
                 <td>Exchange charges</td>
                 <td>{{ total_exchange_charges }}</td>
                 <td>Total</td>
-                <td class="{% if total_pnl >= 0 %}positive{% else %}negative{% endif %}">{{ total_pnl }}</td>
+                <td class="{% if total_value >= 0 %}positive{% else %}negative{% endif %}">{{ total_value }}</td>
             </tr>
         </table>
     </div>
